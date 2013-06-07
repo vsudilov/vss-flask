@@ -3,9 +3,105 @@
 
     <div class="container">
 
-      <h1>Bootstrap starter template</h1>
-      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+      <h1>VBox</h1>
+      <p>Welcome to vbox, the personal website of Vlad Sudilovsky. I am currently a Ph.D. candidate in astrophysics at the Max Planck Institute in Garching, Germany. My research centers on <a href="http://en.wikipedia.org/wiki/Gamma-ray_burst">Gamma-ray bursts</a>, and I am one of the operators of the 7-band imager <a href="http://en.wikipedia.org/wiki/GROND">GROND</a> mounted on the 2.2m MPG telescope in La Silla, Chile. I live in Munich, the jewel of Bavaria.
+</p>
 
     </div> <!-- /container -->
-    
+
+
+<style>
+    /* CUSTOMIZE THE CAROUSEL
+    -------------------------------------------------- */
+
+    /* Carousel base class */
+    .carousel {
+      margin-bottom: 60px;
+    }
+
+    .carousel .container {
+      position: relative;
+      z-index: 9;
+    }
+
+    .carousel-control {
+      height: 80px;
+      margin-top: 0;
+      font-size: 120px;
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+      background-color: transparent;
+      border: 0;
+      z-index: 10;
+    }
+
+    .carousel .item {
+      height: 500px;
+    }
+    .carousel img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      height: 500px;
+    }
+
+    .carousel-caption {
+      background-color: transparent;
+      position: static;
+      max-width: 550px;
+      padding: 0 20px;
+      margin-top: 200px;
+    }
+    .carousel-caption h1,
+    .carousel-caption .lead {
+      margin: 0;
+      line-height: 1.25;
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+    }
+    .carousel-caption .btn {
+      margin-top: 10px;
+    }
+</style>
+
+
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide">
+      <div class="carousel-inner">
+        <div class="item active">
+          <img src="/static/images/cactus2.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <p class="lead">Desert cactus</p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="/static/images/xmas_tree2.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <p class="lead">Christmas tree</p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <img src="/static/images/signpost2.jpg" alt="">
+          <div class="container">
+            <div class="carousel-caption">
+              <p class="lead">Signpost</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div><!-- /.carousel -->
+
+    <script>
+		$(function(){
+          // carousel demo
+          $('#myCarousel').carousel()
+        })
+    </script>
 {% endblock %}
