@@ -9,6 +9,7 @@ class {
       'ruby_modules':   stage => main;
       'bootstrap_js':    stage => main;
       'jquery':         stage => main;
+      'd3js':           stage => main;
       'sass-watch':	stage => last;
 }
 
@@ -91,6 +92,18 @@ class jquery {
       creates => "/home/vagrant/webvss2/static/js/jquery-2.0.2.min.js";
   }
 }
+
+
+#d3.js
+#------------------------------
+class jquery {
+  exec {
+    "download_jquery":
+      command => "/usr/bin/wget http://d3js.org/d3.v3.min.js -O /home/vagrant/webvss2/static/js/d3.v3.min.js",
+      creates => "/home/vagrant/webvss2/static/js/d3.v3.min.js";
+  }
+}
+
 
 # Python modules via pip
 #------------------------------
