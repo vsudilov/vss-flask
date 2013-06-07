@@ -37,8 +37,8 @@ Vagrant::Config.run do |config|
   
   config.vm.share_folder "v-data", "/home/vagrant/webvss2/", "./"
 
-  config.vm.customize ["modifyvm", :id, "--memory", 2048]
-  
+  config.vm.customize ["modifyvm", :id, "--memory", 2048, "--name", "precise64-webvss2"]
+  config.vm.host_name = "precise64-webvss2"
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.

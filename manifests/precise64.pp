@@ -13,8 +13,6 @@ class {
       'sass-watch':	stage => last;
 }
 
-
-
 # Run apt-get update once on VM creation
 # -----------------------------
 class apt_update { 
@@ -96,9 +94,9 @@ class jquery {
 
 #d3.js
 #------------------------------
-class jquery {
+class d3js {
   exec {
-    "download_jquery":
+    "download_d3":
       command => "/usr/bin/wget http://d3js.org/d3.v3.min.js -O /home/vagrant/webvss2/static/js/d3.v3.min.js",
       creates => "/home/vagrant/webvss2/static/js/d3.v3.min.js";
   }
