@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request
+import sqlite3
+import json
+import random
 
 app = Flask(__name__)
 app.debug = True
@@ -21,7 +24,18 @@ def projects():
 
 @app.route('/projects/parxiv/')
 def parxiv():
-  return render_template('projects/parxiv.html',myvar)
+  db = sqlite3.connect('parxiv.db')
+  SQL = '''
+    SELECT word, sum(count)
+    FROM authors
+    GROUP BY word
+    ORDER BY sum(count) DESC
+    LIMIT 100;
+  '''
+  SQL = SQL.strip()
+  results = db.execute(SQL).fetchall()
+  context = {'results':json.dumps(results)}	
+  return render_template('projects/parxiv.html',**context)
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0')
