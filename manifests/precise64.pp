@@ -4,7 +4,8 @@ stage { 'pre': before => Stage['first'] }
 
 class {
       'apt_update':     stage => pre;
-      'system':         stage => first;     
+      'system':         stage => first;
+      'neo4j':          stage => main;
       'python_modules': stage => main;
       'ruby_modules':   stage => main;
       'bootstrap_js':    stage => main;
@@ -73,6 +74,7 @@ class bootstrap_js {
   }
   exec {
     "unzip_and_move":
+      cwd => "/home/vagrant/",
       command => "/usr/bin/unzip /home/vagrant/bootstrap.zip && /bin/mv /home/vagrant/bootstrap /home/vagrant/webvss2/static/",
       user => vagrant,
       creates => "/home/vagrant/webvss2/static/bootstrap",
@@ -103,6 +105,42 @@ class d3js {
 }
 
 
+#class neo4j {
+#  exec {
+#    "download_provisioner":
+#      command => "/usr/bin/wget https://raw.github.com/neo4j-contrib/neo4j-puppet/master/go -O /home/vagrant/go",
+#      creates => "/home/vagrant/go";
+#  }
+#  
+#  exec {
+#    "run_go":
+#      command => "/bin/bash /home/vagrant/go true testu testp && touch /home/vagrant/gone",
+#      creates => "/home/vagrant/gone",
+#      timeout => 0;
+#  } 
+#}
+
+class neo4j{
+  exec {
+    "add_key":
+      command => "/usr/bin/wget -O - http://debian.neo4j.org/neotechnology.gpg.key | /usr/bin/apt-key add - && echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list",
+      creates => "/etc/apt/sources.list.d/neo4j.list";
+  }
+  exec {
+    "apt_update":
+      command => "/usr/bin/apt-get update",
+      require => Exec["add_key"];
+  }
+  exec {
+    "apt_install":
+      command => "/usr/bin/apt-get install neo4j -y",
+      require => Exec["apt_update"],
+      timeout => 0;
+  }
+}
+
+
+
 # Python modules via pip
 #------------------------------
 class python_modules{
@@ -114,6 +152,12 @@ class python_modules{
           ensure => installed,
           provider => pip;
       "uwsgi":
+          ensure => installed,
+          provider => pip;
+      "xlrd":
+          ensure => installed,
+          provider => pip;
+      "py2neo":
           ensure => installed,
           provider => pip;
   }
