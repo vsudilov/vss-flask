@@ -4,41 +4,70 @@
 <script>
 $(document).ready(function(){
 	var data = {{results|safe}}
-    var h = 800
-    var w = 500
-    var padding = 40
-    var svg = d3.select("body")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h);
-    var yscale = d3.scale.linear()
-        .domain([0,d3.max(data, function(d){return d[1]})])
-        .range([h-padding, 0+padding])
+  var svg_w = 600;
+  var svg_h = 400;
+  var padding = 20;
+  var svg = d3.select("div.svg-container")
+            .append("svg")
+            .attr('width','100%')
+            .attr('height','100%')
+  
+  var yscale = d3.scale.linear()
+        .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
+        .range([0+padding,svg_h-padding])
         .nice();
-
-/*
-    svg.append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)")
-        .call(yAxis);*/
-    svg.selectAll("circle")
-       .data(data)
-       .enter()
-       .append("circle")
-       .attr("cx", function(d,i) {
-            return Math.random()*w;
-       })
-       .attr("cy", function(d,i) {
-            return Math.random()*h;
-       })
-       .attr("r", function(d,i) {
-        return Math.sqrt(yscale(d[1]));
-      }
-      )
-
-
+  
+  var dataset = [];
+  for (var i = 0; i < 60; i++) {
+      var datum = i;
+      dataset.push(datum);
+  }
+  
+  
+  var nodes = svg.append("g")
+             .attr("class", "nodes")
+             .selectAll("circle")
+             .data(data)
+             .enter()
+             // Add one g element for each data node here.
+             .append("g")
+             // Position the g element like the circle element used to be.
+             .attr("transform", function(d, i) {
+               x = i/data.length*svg_w;
+               y = yscale(d[1]);
+               x = Math.random()*svg_w
+               y = Math.random()*svg_h
+               return "translate(" + x + "," + y + ")"; 
+             });
+  
+  // Add a circle element to the previously added g element.
+  nodes.append("circle")
+        .transition().duration(1000)
+        .attr("class", "node")
+        .style('fill', 'blue')
+        .attr('stroke', 'black')
+        .attr("r", function(d){
+          return Math.sqrt(yscale(d[1]));
+        });
+  
+  // Add a text element to the previously added g element.
+  nodes.append("text")
+       .attr("text-anchor","middle")
+       //.attr("transform", 'translate(0,-10)')
+       .text(function(d) {
+         return d[0]+":"+d[1];
+       });
 
 })
 </script>
+<style>
+div.svg-container {
+    height: 400px;
+    width: 600px;
+    border: 1px solid red;
+}
+</style>
+<div class="svg-container"></div>
 {% endblock %}
+
 

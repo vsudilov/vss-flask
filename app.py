@@ -30,7 +30,7 @@ def parxiv():
     FROM authors
     GROUP BY word
     ORDER BY sum(count) DESC
-    LIMIT 100;
+    LIMIT 50;
   '''
   SQL = SQL.strip()
   results = db.execute(SQL).fetchall()
