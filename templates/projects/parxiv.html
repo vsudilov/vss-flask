@@ -38,7 +38,10 @@ $(document).ready(function(){
                x = Math.random()*svg_w
                y = Math.random()*svg_h
                return "translate(" + x + "," + y + ")"; 
-             });
+             })
+             .on('click',function(d,i) {
+                console.log('clicked'+d+i)
+            })
   
   // Add a circle element to the previously added g element.
   nodes.append("circle")

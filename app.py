@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
-import sqlite3
 import json
 import random
+from queries.neo4j import graphdb
+from queries.sql import sqldb
 
 app = Flask(__name__)
 app.debug = True
@@ -24,17 +25,18 @@ def projects():
 
 @app.route('/projects/parxiv/')
 def parxiv():
-  db = sqlite3.connect('parxiv.db')
-  SQL = '''
-    SELECT word, sum(count)
-    FROM authors
-    GROUP BY word
-    ORDER BY sum(count) DESC
-    LIMIT 50;
-  '''
-  SQL = SQL.strip()
-  results = db.execute(SQL).fetchall()
-  context = {'results':json.dumps(results)}	
+  sdb = sqldb()
+  results = sdb.hist('authors')
+  context = {'results':json.dumps(results)}
+  
+  gdb = graphdb("http://sauron.mpe.mpg.de:7474/db/data/")
+  allres = []
+  for r in results:
+    author = r[0].encode('ascii', 'ignore')
+    gresults, metadata = gdb.get_collaborators(author,3)
+    if gresults:
+      allres.append(gresults)
+  print len(allres) 
   return render_template('projects/parxiv.html',**context)
 
 if __name__ == '__main__':
