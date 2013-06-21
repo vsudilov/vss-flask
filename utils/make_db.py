@@ -2,6 +2,27 @@ import xlrd
 import time
 from py2neo import neo4j, node, rel, cypher
 
+def cleanedHist(text,exclude=["the","a","an","in",
+                       "be","would","of","that","are","is",
+                       "to","with","for","all","by", 
+                       "at","also","from","too","or","which",
+                       "they","between","this","their","we",
+                       "our","these","its","it","using","has",
+                       "have","than","on","and","will","as",
+                       "where","but",
+                       "into","use","used"],
+              punctuation=['?','!','.',',','"','>',
+                        '<','[',']','{','}',')','(','\'',
+                        '`']
+                        ):
+  ch = {}
+  for word in [w.lower() for w in text if w]:
+    for i in punctuation:
+      word = word.replace(i,'')
+    if word not in exclude:
+      ch[word] = ch.get(word, 0) + 1                         
+  return ch
+
 def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
   print "Reading in the excel document"
   start = time.time()
@@ -19,6 +40,7 @@ def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
   id_paper = db.get_or_create_index(neo4j.Node, "Paper")
   id_telescope = db.get_or_create_index(neo4j.Node, "Telescope")
   id_journal = db.get_or_create_index(neo4j.Node, "Journal")
+  id_word = db.get_or_create_index(neo4j.Node,"Journal")
 
   #Iterate over the excel datasheet, setting up the nodes/relationships
   for i in range(ws.nrows-1):
@@ -27,6 +49,9 @@ def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
       print "Loading: %0.1f%%" % (loadvalue)
     row = ws.row(i+1)
     BibCode,CitationCount,PubYear,Author,AuthorRank,Journal,Telescope,Affiliation,Title,Abstract = [i.value for i in row]
+    hist_title = cleanedHist(Title.replace('\n',' ').split(' '))
+    hist_abstract = cleanedHist(Abstract.replace('\n',' ').split(' '))
+    
     #Person node
     _Person = id_person.get_or_create('name',Author,{'name':Author})
     
@@ -48,7 +73,15 @@ def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
     #Journal node
     _Journal = id_journal.get_or_create('name',Journal,{'name':Journal})
     
-    #Nodes defined, now to make their relationships
+    #Word node+relationships
+    for hist in [hist_title,hist_abstract]:
+      for word in hist:
+        c = hist_title[word] if hist==hist_title else hist_abstract[word]
+        r = 'IN_TITLE_OF' if hist==hist_title else 'IN_ABSTRACT_OF'
+        _Word = id_journal.get_or_create('word',word,{'word':word})
+        _Word.get_or_create_path((r,{'count':c}),_Paper)
+      
+    #Other relationships
     _Person.get_or_create_path(("AUTHOR_OF",{'rank':AuthorRank}),_Paper)
     _Person.get_or_create_path(("AFFILIATED_WITH",{'year',PubYear}),_Institute)
     _Paper.get_or_create_path("SUBMITTED_TO",_Journal)
