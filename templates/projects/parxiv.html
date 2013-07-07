@@ -3,9 +3,11 @@
 <script src="/static/js/d3.v3.min.js"></script>
 <script>
 $(document).ready(function(){
-  
-  $(document).on('click','button#post-btn',function() {
-    console.log('POSTING')
+  $('#btn-base').button('toggle')
+
+  $(document).on('click','button',function() {
+    var id = $(this).attr('id')
+    console.log(id)
     $.ajax({
         type: 'POST',
         url: '/projects/parxiv/',
@@ -17,7 +19,7 @@ $(document).ready(function(){
           console.log(data)
         },
         error: function(jqXHR,textStatus,errorThrown) {
-         console.log(textStatus,errorThrown)
+          console.log(textStatus,errorThrown)
         }
     });
   });
@@ -87,6 +89,7 @@ $(document).ready(function(){
          .attr("text-anchor","middle")
          //.attr("transform", 'translate(0,-18)')
          .attr('fill','black')
+         .attr('font-size','130%')
          .text(function(d) {
            return d[0]+" ("+d[1]+")";
          });
@@ -126,7 +129,6 @@ div.svg-container p {
   font-size: 3em;
 }
 </style>
-<button id="post-btn" class="btn-primary">Click to POST</button>
 
 <div class="svg-container one">
 <p>Prolific</p>
@@ -138,6 +140,14 @@ div.svg-container p {
 
 <div class="svg-container three">
 <p>High impact</p>
+</div>
+
+<div style="margin-left:40%; margin-top:50px;" class="btn-group" data-toggle="buttons-radio">
+    <button id="btn-base" type="button" class="btn btn-primary"> Base </button>
+    <button id="btn-conn-authors" type="button" class="btn btn-primary"> Authors </button>
+    <button id="btn-conn-institutes" type="button" class="btn btn-primary"> Institutes </button>
+    <button id="btn-conn-facilities" type="button" class="btn btn-primary"> Facilities </button>
+    <button id="btn-conn-words" type="button" class="btn btn-primary"> Words </button>
 </div>
 {% endblock %}
 
