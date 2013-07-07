@@ -5,7 +5,7 @@ class graphdb:
   def __init__(self,db_url="http://localhost:7474/db/data/"):
     self.db = neo4j.GraphDatabaseService(db_url)
     
-  def get_collaborators(self,author,rank):
+  def get_collaborators_case_insensitive(self,author,rank):
     QUERY = '''
       START author=node:Person("name:*")
       MATCH (author)-[:AUTHOR_OF]->(paper)<-[rank:AUTHOR_OF]-(collaboraters)
@@ -18,3 +18,47 @@ class graphdb:
     QUERY = QUERY % (author,rank)
     results = cypher.execute(self.db,QUERY)
     return results
+
+  def get_collaborators_case_sensitive(self,author,rank):
+    QUERY = '''
+      START author=node:Person(name="%s")
+      MATCH (author)-[:AUTHOR_OF]->(paper)<-[rank:AUTHOR_OF]-(collaboraters)
+      WHERE  
+        rank.rank<=%s
+        AND rank.rank<>1
+      RETURN distinct(collaboraters)
+    '''.strip()
+    QUERY = QUERY % (author,rank)
+    results = cypher.execute(self.db,QUERY)
+    return results
+
+  def get_top_firstauthors_by_papercount(self,limit):
+    QUERY = '''
+      START author=node:Person('name:*')
+      MATCH (author)-[rank:AUTHOR_OF]->(paper)
+      WHERE 
+        rank.rank=1
+      RETURN author.name,count(paper) 
+      ORDER BY count(paper) DESC
+      LIMIT %s; 
+    '''
+    QUERY = QUERY % (limit,)
+    results = cypher.execute(self.db,QUERY)
+    return results
+
+  def get_top_firstauthors_by_citationcount(self,limit):
+    QUERY = '''
+      START author=node:Person('name:*')
+      MATCH (author)-[rank:AUTHOR_OF]->(paper)
+      WHERE 
+        rank.rank=1
+      RETURN author.name,count(paper), sum(paper.citationcount) 
+      ORDER BY sum(paper.citationcount) DESC
+      LIMIT %s;
+    '''
+    QUERY = QUERY % (limit,)
+    results = cypher.execute(self.db,QUERY)
+    return results
+
+
+

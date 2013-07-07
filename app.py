@@ -3,6 +3,7 @@ import json
 import random
 from queries.neo4j import graphdb
 from queries.sql import sqldb
+import time
 
 app = Flask(__name__)
 app.debug = True
@@ -25,18 +26,11 @@ def projects():
 
 @app.route('/projects/parxiv/')
 def parxiv():
-  sdb = sqldb()
-  results = sdb.hist('authors')
+  gdb = graphdb("http://localhost:7474/db/data/")
+  start = time.time()
+  results, metadata = gdb.get_top_firstauthors_by_papercount(limit=10)
+  print "%0.2f seconds" % (time.time()-start)
   context = {'results':json.dumps(results)}
-  
-  gdb = graphdb("http://sauron.mpe.mpg.de:7474/db/data/")
-  allres = []
-  for r in results:
-    author = r[0].encode('ascii', 'ignore')
-    gresults, metadata = gdb.get_collaborators(author,3)
-    if gresults:
-      allres.append(gresults)
-  print len(allres) 
   return render_template('projects/parxiv.html',**context)
 
 if __name__ == '__main__':
