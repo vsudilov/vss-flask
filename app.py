@@ -24,14 +24,26 @@ def contact():
 def projects():
   return render_template('projects.html')
 
-@app.route('/projects/parxiv/')
+@app.route('/projects/parxiv/', methods=['get','post'])
 def parxiv():
-  gdb = graphdb("http://localhost:7474/db/data/")
-  start = time.time()
-  results, metadata = gdb.get_top_firstauthors_by_papercount(limit=10)
-  print "%0.2f seconds" % (time.time()-start)
-  context = {'results':json.dumps(results)}
-  return render_template('projects/parxiv.html',**context)
+  if request.method=='GET':
+    gdb = graphdb("http://localhost:7474/db/data/")
+    context = {}
+
+    results, metadata = gdb.get_top_firstauthors_by_papercount(limit=10)
+    context.update({'top_by_papercount':json.dumps(results)})
+
+    results, metadata = gdb.get_top_firstauthors_by_citationcount(limit=10)
+    context.update({'top_by_citationcount':json.dumps(results)})
+
+    results, metadata = gdb.get_top_firstauthors_by_citationsperpaper(limit=10)
+    context.update({'top_by_citationsperpaper':json.dumps(results)})
+
+    return render_template('projects/parxiv.html',**context)
+  if request.method=='POST':
+    results = {"foo":"bar"}
+    return json.dumps(results)
+
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0')

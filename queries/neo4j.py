@@ -52,7 +52,7 @@ class graphdb:
       MATCH (author)-[rank:AUTHOR_OF]->(paper)
       WHERE 
         rank.rank=1
-      RETURN author.name,count(paper), sum(paper.citationcount) 
+      RETURN author.name, sum(paper.citationcount) 
       ORDER BY sum(paper.citationcount) DESC
       LIMIT %s;
     '''
@@ -60,5 +60,18 @@ class graphdb:
     results = cypher.execute(self.db,QUERY)
     return results
 
+  def get_top_firstauthors_by_citationsperpaper(self,limit):
+    QUERY = '''
+      START author=node:Person('name:*')
+      MATCH (author)-[rank:AUTHOR_OF]->(paper)
+      WHERE 
+        rank.rank=1
+      RETURN author.name, sum(paper.citationcount)/count(paper) 
+      ORDER BY sum(paper.citationcount)/count(paper) DESC
+      LIMIT %s;
+    '''
+    QUERY = QUERY % (limit,)
+    results = cypher.execute(self.db,QUERY)
+    return results
 
 

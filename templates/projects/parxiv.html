@@ -3,73 +3,113 @@
 <script src="/static/js/d3.v3.min.js"></script>
 <script>
 $(document).ready(function(){
-	var data = {{results|safe}}
- 
-  var yscale = d3.scale.linear()
-        .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
-        .range([400,1200])
-        .nice();
-
-  var w = 960,
-      h = 500
-
-  var vis = d3.select("div.svg-container").append("svg")
-      .attr("width", w)
-      .attr("height", h);
-
-  var force = d3.layout.force()
-    .nodes(data)
-    .links([])
-    .size([w, h])
-    .gravity(0.01)
-    .charge(-50)
-    .start();
-
-  var node = vis.selectAll("g.node")
-    .data(force.nodes()) 
-    .enter().append("svg:g")
-    .attr("class", "node")
-    .attr("transform", function(d, i) {
-      x = d.x
-      y = d.y
-      return "translate(" + x + "," + y + ")"; 
-    })
-    .call(force.drag)  
-
-  node.append("circle")
-        .transition().duration(1000)
-        .attr("class", "node")
-        .style('fill', 'skyblue')
-        //.attr('stroke', 'black')
-        .attr("r", function(d){
-          return Math.sqrt(yscale(d[1]));
-        });
   
-  // Add a text element to the previously added g element.
-  node.append("text")
-       .attr("text-anchor","middle")
-       //.attr("transform", 'translate(0,-18)')
-       .attr('fill','black')
-       .text(function(d) {
-         return d[0]+": "+d[1];
-       });
-
-  vis.style("opacity", 1e-6)
-    .transition()
-      .duration(1000)
-      .style("opacity", 1);
-
-  force.on("tick", function(e) {
-    // Push different nodes in different directions for clustering.
-    // var k = 6 * e.alpha;
-    // nodes.forEach(function(o, i) {
-    //   o.y += i & 1 ? k : -k;
-    //   o.x += i & 2 ? k : -k;
-    // });
-    node.attr("transform", function(d) {
-          return "translate("+d.x+","+d.y+")";
-        });
+  $(document).on('click','button#post-btn',function() {
+    console.log('POSTING')
+    $.ajax({
+        type: 'POST',
+        url: '/projects/parxiv/',
+        data: {
+          'test':'testdata'
+        },
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR){
+          console.log(data)
+        },
+        error: function(jqXHR,textStatus,errorThrown) {
+         console.log(textStatus,errorThrown)
+        }
+    });
   });
+
+  var mapping = {
+    "one": {
+      "data" :{{top_by_papercount|safe}},
+      "color": "skyblue"
+    },
+    
+    "two": {
+      "data": {{top_by_citationcount|safe}},
+      "color": "tomato",
+    },
+
+    "three": {
+      "data": {{top_by_citationsperpaper|safe}},
+      "color": "peru",
+    }
+  }
+
+  $.each(mapping,function(k,v) {
+    var data = v.data
+   
+    var yscale = d3.scale.linear()
+          .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
+          .range([500,2500])
+          .nice();
+
+    var w = $('div.svg-container.'+k).width(),
+        h = $('div.svg-container.'+k).height()
+
+    var vis = d3.select("div.svg-container."+k).append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    var force = d3.layout.force()
+      .nodes(data)
+      .links([])
+      .size([w, h])
+      .gravity(0.01)
+      .charge(-50)
+      .start();
+
+    var node = vis.selectAll("g.node")
+      .data(force.nodes()) 
+      .enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d, i) {
+        x = d.x
+        y = d.y
+        return "translate(" + x + "," + y + ")"; 
+      })
+      .call(force.drag)  
+
+    node.append("circle")
+          .transition().duration(1000)
+          .attr("class", "node")
+          .style('fill', v.color)
+          //.attr('stroke', 'black')
+          .attr("r", function(d){
+            return Math.sqrt(yscale(d[1]));
+          });
+    
+    // Add a text element to the previously added g element.
+    node.append("text")
+         .attr("text-anchor","middle")
+         //.attr("transform", 'translate(0,-18)')
+         .attr('fill','black')
+         .text(function(d) {
+           return d[0]+" ("+d[1]+")";
+         });
+
+    vis.style("opacity", 1e-6)
+      .transition()
+        .duration(1000)
+        .style("opacity", 1);
+
+    force.on("tick", function(e) {
+      // Push different nodes in different directions for clustering.
+      // var k = 6 * e.alpha;
+      // nodes.forEach(function(o, i) {
+      //   o.y += i & 1 ? k : -k;
+      //   o.x += i & 2 ? k : -k;
+      // });
+      node.attr("transform", function(d) {
+            return "translate("+d.x+","+d.y+")";
+          });
+    });
+
+  });
+	
 });
 </script>
 
@@ -78,14 +118,27 @@ $(document).ready(function(){
 <style>
 div.svg-container {
     height: 500px;
-    width: 950px;
-    
+    width: 33%;
+    float: left;
+}
+div.svg-container p {
+  text-align: center;
+  font-size: 3em;
 }
 </style>
-<div class="span8 offset5">
-  <div class="svg-container"></div>
-<div>
+<button id="post-btn" class="btn-primary">Click to POST</button>
 
+<div class="svg-container one">
+<p>Prolific</p>
+</div>
+
+<div class="svg-container two">
+<p>Cited</p>
+</div>
+
+<div class="svg-container three">
+<p>High impact</p>
+</div>
 {% endblock %}
 
 
