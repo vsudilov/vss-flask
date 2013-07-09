@@ -3,6 +3,7 @@
 <script src="/static/js/d3.v3.min.js"></script>
 <script>
 $(document).ready(function(){
+
   $('#btn-base').button('toggle')
 
   $(document).on('click','button',function() {
@@ -41,9 +42,25 @@ $(document).ready(function(){
     }
   }
 
+  function makeLinks(data) {
+    var links = []
+      $.each(data,function(index,value){
+        var fromNode = index
+        var toNode = index+1 < data.length ? index : index-2
+        var r1 = Math.floor(Math.random()*data.length)
+        var r2 = Math.floor(Math.random()*data.length)
+        links.push(
+          {
+            'source':data[r1],
+            'target':data[r2],
+          }
+        )
+      })
+    return links
+  }
+
   $.each(mapping,function(k,v) {
     var data = v.data
-   
     var yscale = d3.scale.linear()
           .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
           .range([500,2500])
@@ -56,13 +73,30 @@ $(document).ready(function(){
         .attr("width", w)
         .attr("height", h);
 
+    var links = makeLinks(data)
     var force = d3.layout.force()
       .nodes(data)
-      .links([])
+      .links(links)
       .size([w, h])
       .gravity(0.01)
       .charge(-50)
+      .linkStrength(0.2)
+      .linkDistance(200)
       .start();
+
+    console.log(force.nodes())
+    console.log(force.links())
+    var link = vis.selectAll("line.link")
+      .data(force.links());
+
+    link.enter().insert("svg:line", ".node")
+      .attr("class", "link")
+      .attr("x1", function(d) { return d.source.x; })
+      .attr("y1", function(d) { return d.source.y; })
+      .attr("x2", function(d) { return d.target.x; })
+      .attr("y2", function(d) { return d.target.y; });
+
+    link.exit().remove();
 
     var node = vis.selectAll("g.node")
       .data(force.nodes()) 
@@ -99,6 +133,7 @@ $(document).ready(function(){
         .duration(1000)
         .style("opacity", 1);
 
+
     force.on("tick", function(e) {
       // Push different nodes in different directions for clustering.
       // var k = 6 * e.alpha;
@@ -106,40 +141,46 @@ $(document).ready(function(){
       //   o.y += i & 1 ? k : -k;
       //   o.x += i & 2 ? k : -k;
       // });
+      link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
       node.attr("transform", function(d) {
             return "translate("+d.x+","+d.y+")";
           });
     });
-
   });
 	
 });
 </script>
 
-
-
 <style>
-div.svg-container {
-    height: 500px;
-    width: 33%;
-    float: left;
-}
-div.svg-container p {
-  text-align: center;
-  font-size: 3em;
-}
+  div.svg-container {
+      height: 500px;
+      width: 33%;
+      float: left;
+  }
+  div.svg-container p {
+    text-align: center;
+    font-size: 3em;
+  }
+line {
+  fill: none;
+  stroke: #9ecae1;
+  stroke-width: 3.5px;
 </style>
 
 <div class="svg-container one">
-<p>Prolific</p>
+<p class="muted">Prolific</p>
 </div>
 
 <div class="svg-container two">
-<p>Cited</p>
+<p class="muted">Cited</p>
 </div>
 
 <div class="svg-container three">
-<p>High impact</p>
+<p class="muted">High impact</p>
 </div>
 
 <div style="margin-left:40%; margin-top:50px;" class="btn-group" data-toggle="buttons-radio">
