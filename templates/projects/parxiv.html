@@ -24,38 +24,56 @@ $(document).ready(function(){
         }
     });
   });
-
   var mapping = {
     "one": {
       "data" :{{top_by_papercount|safe}},
-      "color": "skyblue"
+      "color": d3.rgb(135,206,235),
+      "links": {{relationships_by_papercount|safe}},
     },
     
     "two": {
       "data": {{top_by_citationcount|safe}},
-      "color": "tomato",
+      "color": d3.rgb(255,99,71),
+      "links": {{relationships_by_citationcount|safe}},
     },
 
     "three": {
       "data": {{top_by_citationsperpaper|safe}},
-      "color": "peru",
-    }
+      "color": d3.rgb(205,133,63),
+      "links": {{relationships_by_citationsperpaper|safe}},
+    },
   }
 
-  function makeLinks(data) {
+  var makeLinks = function (data) {
+    var median = function (values) {
+ 
+      values.sort( function(a,b) {return a - b;} );
+       
+      var half = Math.floor(values.length/2);
+       
+      if (values.length % 2)
+        return values[half];
+      else
+        return (values[half-1] + values[half]) / 2.0;
+    }
+
     var links = []
-      $.each(data,function(index,value){
-        var fromNode = index
-        var toNode = index+1 < data.length ? index : index-2
-        var r1 = Math.floor(Math.random()*data.length)
-        var r2 = Math.floor(Math.random()*data.length)
-        links.push(
+    var flattenedData = Array.prototype.concat.apply([], data.data) 
+    $.each(data.links,function(k,v){
+      var fromNodeIndex = flattenedData.indexOf(k)/2
+      $.each(v,function(k,_v){
+        var toNodeIndex = flattenedData.indexOf(k)/2
+        if (toNodeIndex>0 && fromNodeIndex>0 && _v.length>0) {
+          links.push(
           {
-            'source':data[r1],
-            'target':data[r2],
-          }
-        )
+            'source':data.data[fromNodeIndex],
+            'target':data.data[toNodeIndex],
+            'stroke_width':_v.length,
+            'stroke':median(_v)/10,
+          })
+        }
       })
+    })
     return links
   }
 
@@ -73,7 +91,7 @@ $(document).ready(function(){
         .attr("width", w)
         .attr("height", h);
 
-    var links = makeLinks(data)
+    var links = makeLinks(v)
     var force = d3.layout.force()
       .nodes(data)
       .links(links)
@@ -84,8 +102,6 @@ $(document).ready(function(){
       .linkDistance(200)
       .start();
 
-    console.log(force.nodes())
-    console.log(force.links())
     var link = vis.selectAll("line.link")
       .data(force.links());
 
@@ -94,7 +110,8 @@ $(document).ready(function(){
       .attr("x1", function(d) { return d.source.x; })
       .attr("y1", function(d) { return d.source.y; })
       .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
+      .attr("y2", function(d) { return d.target.y; })
+      .attr("style", function(d) { return "stroke-width: "+d.stroke_width+"; stroke: "+v.color.darker(d.stroke) })
 
     link.exit().remove();
 
@@ -167,8 +184,7 @@ $(document).ready(function(){
   }
 line {
   fill: none;
-  stroke: #9ecae1;
-  stroke-width: 3.5px;
+  stroke: #CC66FF;
 </style>
 
 <div class="svg-container one">
@@ -183,12 +199,15 @@ line {
 <p class="muted">High impact</p>
 </div>
 
-<div style="margin-left:40%; margin-top:50px;" class="btn-group" data-toggle="buttons-radio">
-    <button id="btn-base" type="button" class="btn btn-primary"> Base </button>
-    <button id="btn-conn-authors" type="button" class="btn btn-primary"> Authors </button>
-    <button id="btn-conn-institutes" type="button" class="btn btn-primary"> Institutes </button>
-    <button id="btn-conn-facilities" type="button" class="btn btn-primary"> Facilities </button>
-    <button id="btn-conn-words" type="button" class="btn btn-primary"> Words </button>
+<div style="margin-left:45%; margin-top:600px;">
+  <p class="muted">Relationship depth: </p>
+  <div class="btn-group" data-toggle="buttons-radio">
+      <button id="btn-base" type="button" class="btn btn-primary"> 1 </button>
+      <button id="btn-conn-authors" type="button" class="btn btn-primary"> 2 </button>
+      <button id="btn-conn-institutes" type="button" class="btn btn-primary"> 3 </button>
+      <button id="btn-conn-facilities" type="button" class="btn btn-primary"> 4 </button>
+      <button id="btn-conn-words" type="button" class="btn btn-primary"> 5 </button>
+  </div>
 </div>
 {% endblock %}
 

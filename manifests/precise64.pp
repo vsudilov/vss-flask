@@ -68,7 +68,7 @@ class system{
 class bootstrap_js {
   exec{
     "download_bootstrap":
-      command => "/usr/bin/wget http://twitter.github.io/bootstrap/assets/bootstrap.zip -O /home/vagrant/bootstrap.zip",
+      command => "/usr/bin/wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip -O /home/vagrant/bootstrap.zip",
       user => vagrant,
       creates => "/home/vagrant/bootstrap.zip";
   }

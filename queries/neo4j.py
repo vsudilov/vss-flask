@@ -74,4 +74,20 @@ class graphdb:
     results = cypher.execute(self.db,QUERY)
     return results
 
-
+  def find_authors_relationships(self,authors):
+    results = {}
+    for author in authors:
+      results[author] = {}
+      for related_author in authors:
+        if related_author == author:
+          continue
+        QUERY = '''
+          START author=node:Person(name="%s")
+          MATCH (author)-[:AUTHOR_OF]->(paper)<-[rank:AUTHOR_OF]-(related_author)
+          WHERE
+            related_author.name="%s"
+          RETURN rank.rank
+        '''
+        QUERY = QUERY % (author,related_author)
+        results[author][related_author] = [i[0] for i in cypher.execute(self.db,QUERY)[0]]
+    return results
