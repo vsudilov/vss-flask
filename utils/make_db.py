@@ -1,6 +1,7 @@
 import xlrd
 import time
 from py2neo import neo4j, node, rel, cypher
+import unicodedata
 
 def cleanedHist(text,exclude=["the","a","an","in",
                        "be","would","of","that","are","is",
@@ -22,6 +23,11 @@ def cleanedHist(text,exclude=["the","a","an","in",
     if word not in exclude:
       ch[word] = ch.get(word, 0) + 1                         
   return ch
+
+def sanitize(value):
+  if type(value)==unicode:
+    return unicodedata.normalize('NFKD',value.replace(u'\xc3\xbc','ue')).encode('ascii', 'ignore') #Manually put "ue" in u-umlaut...Need to use a better solution eventually
+  return value
 
 def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
   print "Reading in the excel document"
@@ -48,7 +54,7 @@ def main(input='/home/vagrant/webvss2/telbib-output.xlsx'):
     if not round(loadvalue) % 10:
       print "Loading: %0.1f%%" % (loadvalue)
     row = ws.row(i+1)
-    BibCode,CitationCount,PubYear,Author,AuthorRank,Journal,Telescope,Affiliation,Title,Abstract = [i.value for i in row]
+    BibCode,CitationCount,PubYear,Author,AuthorRank,Journal,Telescope,Affiliation,Title,Abstract = [sanitize(i.value) for i in row]
     hist_title = cleanedHist(Title.replace('\n',' ').split(' '))
     hist_abstract = cleanedHist(Abstract.replace('\n',' ').split(' '))
     
