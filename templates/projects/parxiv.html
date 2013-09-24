@@ -4,9 +4,12 @@
 <script>
 $(document).ready(function(){
 
+  //$('.tooltip-help').tooltip()
+  $('.tooltip-help').popover()
+  
   $('#btn-base').button('toggle')
 
-  $(document).on('click','button',function() {
+  $(document).on('click','button.change-relationship-level',function() {
     var id = $(this).attr('id')
     console.log(id)
     $.ajax({
@@ -24,6 +27,136 @@ $(document).ready(function(){
         }
     });
   });
+
+    var render = function (mapping) {
+      var makeLinks = function (data) {
+        var median = function (values) {
+     
+          values.sort( function(a,b) {return a - b;} );
+           
+          var half = Math.floor(values.length/2);
+           
+          if (values.length % 2)
+            return values[half];
+          else
+            return (values[half-1] + values[half]) / 2.0;
+        }
+
+        var links = []
+        var flattenedData = Array.prototype.concat.apply([], data.data) 
+        $.each(data.links,function(k,v){
+          var fromNodeIndex = flattenedData.indexOf(k)/2
+          $.each(v,function(k,_v){
+            var toNodeIndex = flattenedData.indexOf(k)/2
+            if (toNodeIndex>0 && fromNodeIndex>0 && _v.length>0) {
+              links.push(
+              {
+                'source':data.data[fromNodeIndex],
+                'target':data.data[toNodeIndex],
+                'stroke_width':_v.length,
+                'stroke':median(_v)/10,
+              })
+            }
+          })
+        })
+        return links
+      }
+
+      $.each(mapping,function(k,v) {
+        var data = v.data
+        var yscale = d3.scale.linear()
+              .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
+              .range([500,2500])
+              .nice();
+
+        var w = $('div.svg-container.'+k).width(),
+            h = $('div.svg-container.'+k).height()
+        
+        var prev_vis = $('div.svg-container.'+k+' svg')
+        if ( prev_vis) { prev_vis.remove() }    
+
+        var vis = d3.select("div.svg-container."+k).append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        var links = makeLinks(v)
+        var force = d3.layout.force()
+          .nodes(data)
+          .links(links)
+          .size([w, h])
+          .gravity(0.01)
+          .charge(-50)
+          .linkStrength(0.2)
+          .linkDistance(200)
+          .start();
+
+        var link = vis.selectAll("line.link")
+          .data(force.links());
+
+        link.enter().insert("svg:line", ".node")
+          .attr("class", "link")
+          .attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; })
+          .attr("style", function(d) { return "stroke-width: "+d.stroke_width+"; stroke: "+v.color.brighter(d.stroke) })
+
+        link.exit().remove();
+
+        var node = vis.selectAll("g.node")
+          .data(force.nodes()) 
+          .enter().append("svg:g")
+          .attr("class", "node")
+          .attr("transform", function(d, i) {
+            x = d.x
+            y = d.y
+            return "translate(" + x + "," + y + ")"; 
+          })
+          .call(force.drag)  
+
+        node.append("circle")
+              .transition().duration(1000)
+              .attr("class", "node")
+              .style('fill', v.color)
+              //.attr('stroke', 'black')
+              .attr("r", function(d){
+                return Math.sqrt(yscale(d[1]));
+              });
+        
+        // Add a text element to the previously added g element.
+        node.append("text")
+             .attr("text-anchor","middle")
+             //.attr("transform", 'translate(0,-18)')
+             .attr('fill','black')
+             .attr('font-size','130%')
+             .text(function(d) {
+               return d[0]+" ("+d[1]+")";
+             });
+
+        vis.style("opacity", 1e-6)
+          .transition()
+            .duration(1000)
+            .style("opacity", 1);
+
+
+        force.on("tick", function(e) {
+          // Push different nodes in different directions for clustering.
+          // var k = 6 * e.alpha;
+          // nodes.forEach(function(o, i) {
+          //   o.y += i & 1 ? k : -k;
+          //   o.x += i & 2 ? k : -k;
+          // });
+          link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+          node.attr("transform", function(d) {
+                return "translate("+d.x+","+d.y+")";
+              });
+        });
+      });
+    }
   var mapping = {
     "one": {
       "data" :{{top_by_papercount|safe}},
@@ -44,135 +177,16 @@ $(document).ready(function(){
     },
   }
 
-  var makeLinks = function (data) {
-    var median = function (values) {
- 
-      values.sort( function(a,b) {return a - b;} );
-       
-      var half = Math.floor(values.length/2);
-       
-      if (values.length % 2)
-        return values[half];
-      else
-        return (values[half-1] + values[half]) / 2.0;
-    }
-
-    var links = []
-    var flattenedData = Array.prototype.concat.apply([], data.data) 
-    $.each(data.links,function(k,v){
-      var fromNodeIndex = flattenedData.indexOf(k)/2
-      $.each(v,function(k,_v){
-        var toNodeIndex = flattenedData.indexOf(k)/2
-        if (toNodeIndex>0 && fromNodeIndex>0 && _v.length>0) {
-          links.push(
-          {
-            'source':data.data[fromNodeIndex],
-            'target':data.data[toNodeIndex],
-            'stroke_width':_v.length,
-            'stroke':median(_v)/10,
-          })
-        }
-      })
-    })
-    return links
-  }
-
-  $.each(mapping,function(k,v) {
-    var data = v.data
-    var yscale = d3.scale.linear()
-          .domain([d3.min(data,function(d){return d[1]}),d3.max(data, function(d){return d[1]})])
-          .range([500,2500])
-          .nice();
-
-    var w = $('div.svg-container.'+k).width(),
-        h = $('div.svg-container.'+k).height()
-
-    var vis = d3.select("div.svg-container."+k).append("svg")
-        .attr("width", w)
-        .attr("height", h);
-
-    var links = makeLinks(v)
-    var force = d3.layout.force()
-      .nodes(data)
-      .links(links)
-      .size([w, h])
-      .gravity(0.01)
-      .charge(-50)
-      .linkStrength(0.2)
-      .linkDistance(200)
-      .start();
-
-    var link = vis.selectAll("line.link")
-      .data(force.links());
-
-    link.enter().insert("svg:line", ".node")
-      .attr("class", "link")
-      .attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; })
-      .attr("style", function(d) { return "stroke-width: "+d.stroke_width+"; stroke: "+v.color.darker(d.stroke) })
-
-    link.exit().remove();
-
-    var node = vis.selectAll("g.node")
-      .data(force.nodes()) 
-      .enter().append("svg:g")
-      .attr("class", "node")
-      .attr("transform", function(d, i) {
-        x = d.x
-        y = d.y
-        return "translate(" + x + "," + y + ")"; 
-      })
-      .call(force.drag)  
-
-    node.append("circle")
-          .transition().duration(1000)
-          .attr("class", "node")
-          .style('fill', v.color)
-          //.attr('stroke', 'black')
-          .attr("r", function(d){
-            return Math.sqrt(yscale(d[1]));
-          });
-    
-    // Add a text element to the previously added g element.
-    node.append("text")
-         .attr("text-anchor","middle")
-         //.attr("transform", 'translate(0,-18)')
-         .attr('fill','black')
-         .attr('font-size','130%')
-         .text(function(d) {
-           return d[0]+" ("+d[1]+")";
-         });
-
-    vis.style("opacity", 1e-6)
-      .transition()
-        .duration(1000)
-        .style("opacity", 1);
-
-
-    force.on("tick", function(e) {
-      // Push different nodes in different directions for clustering.
-      // var k = 6 * e.alpha;
-      // nodes.forEach(function(o, i) {
-      //   o.y += i & 1 ? k : -k;
-      //   o.x += i & 2 ? k : -k;
-      // });
-      link.attr("x1", function(d) { return d.source.x; })
-        .attr("y1", function(d) { return d.source.y; })
-        .attr("x2", function(d) { return d.target.x; })
-        .attr("y2", function(d) { return d.target.y; });
-
-      node.attr("transform", function(d) {
-            return "translate("+d.x+","+d.y+")";
-          });
-    });
-  });
+  render(mapping)
 	
 });
 </script>
 
 <style>
+  p {
+    text-align: left;
+    font-size: 1.2em;
+  }
   div.svg-container {
       height: 500px;
       width: 33%;
@@ -182,10 +196,51 @@ $(document).ready(function(){
     text-align: center;
     font-size: 3em;
   }
-line {
-  fill: none;
-  stroke: #CC66FF;
+  line {
+    fill: none;
+    stroke: #CC66FF;
+  }
 </style>
+
+
+<div class="page-header">
+<div style="margin-left:30%">
+
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#help">
+    What am I looking at?
+  </button>
+
+  <div id="help" class="collapse" style="margin-top:20px;">
+    <p>
+      Below is a representation of the <b>top 10 authors</b> in three categories:
+      <ul class='unstyled'>
+          <li>Most publications (prolific)</li>
+          <li>Most citations (cited)</li>
+          <li>Highest ratio of papers/citations (high impact)</li>
+      </ul>
+    </p>
+
+    <p>
+        <b>Links</b> between authors represent a connection of authors in their papers:
+        <ul class='unstyled'>
+            <li>Larger links represent higher frequency of co-authorship</li>
+            <li>Darker links represent higher rank of co-authorship (closer to top of author list)</li>
+        </ul>
+    </p>
+
+    <p>
+      <b>Relationship depth</b> refers to how many papers removed an author is from another.
+      <ul class='unstyled'>
+          <li>0: Authors are directly linked as co-authors</li>
+          <li>1: Authors are linked through exactly 1 co-author</li>
+          <li>2: Authors are linked through exactly 2 co-authors</li>
+      </ul>
+    </p>
+
+
+  </div>
+</div>
+</div>
 
 <div class="svg-container one">
 <p class="muted">Prolific</p>
@@ -202,11 +257,11 @@ line {
 <div style="margin-left:45%; margin-top:600px;">
   <p class="muted">Relationship depth: </p>
   <div class="btn-group" data-toggle="buttons-radio">
-      <button id="btn-base" type="button" class="btn btn-primary"> 1 </button>
-      <button id="btn-conn-authors" type="button" class="btn btn-primary"> 2 </button>
-      <button id="btn-conn-institutes" type="button" class="btn btn-primary"> 3 </button>
-      <button id="btn-conn-facilities" type="button" class="btn btn-primary"> 4 </button>
-      <button id="btn-conn-words" type="button" class="btn btn-primary"> 5 </button>
+      <button id="btn-base" type="button" class="btn btn-primary change-relationship-level"> 0 </button>
+      <button id="btn-conn-authors" type="button" class="btn btn-primary change-relationship-level"> 1 </button>
+      <button id="btn-conn-institutes" type="button" class="btn btn-primary change-relationship-level"> 2 </button>
+      <button id="btn-conn-facilities" type="button" class="btn btn-primary change-relationship-level"> 3 </button>
+      <button id="btn-conn-words" type="button" class="btn btn-primary change-relationship-level"> 4 </button>
   </div>
 </div>
 {% endblock %}

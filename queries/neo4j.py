@@ -83,9 +83,10 @@ class graphdb:
           continue
         QUERY = '''
           START author=node:Person(name="%s")
-          MATCH (author)-[:AUTHOR_OF]->(paper)<-[rank:AUTHOR_OF]-(related_author)
+          MATCH (author)-[fa:AUTHOR_OF]->(paper)<-[rank:AUTHOR_OF]-(related_author)
           WHERE
             related_author.name="%s"
+            AND fa.rank=1
           RETURN rank.rank
         '''
         QUERY = QUERY % (author,related_author)
