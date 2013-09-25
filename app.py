@@ -30,6 +30,10 @@ def contact():
 def projects():
   return render_template('projects.html')
 
+@app.route('/projects/mgii')
+def mgii():
+  return render_template('mgii.html')
+
 @app.route('/projects/parxiv/', methods=['get','post'])
 def parxiv():
   if request.method=='GET':

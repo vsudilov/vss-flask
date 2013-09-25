@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+   button.btn-info{
+      height:50px;
+      width:280px;
+   }
+   span.number-header{
+      font-weight: bold;
+      color:black;
+   }
+
+</style>
+
+<div class="page-header">
+  <p style="margin-left:30%" class="muted">My research involving Magnesium -- Click each section to get more info</p>
+</div>
+
+
+<div class="row">
+  <div class="offset5 span6">
+   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_1">
+      <span class="number-header">1.</span> The universe is polluted by gas from stars
+   </button>
+    <div id="_1" class="collapse" style="margin-top:20px;">
+      <p>
+        During a star's lifetime and death, it ejects gases. The gases from many stars accumulate in their galaxy. From measurements of these various gases, we can construct a picture about the composition of even distant galaxies. These gases are a fossil record of a galaxy's history.
+      </p>
+    </div>
+
+  </div>
+  <div class="span6">
+   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_2">
+      <span class="number-header">2.</span> To study the distant universe, we need to be able to see this gas
+   </button>
+    <div id="_2" class="collapse" style="margin-top:20px;">
+      <p>
+        palceholder
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<div class="row" style="margin-top:50px;">
+  <div class="offset5 span6">
+   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_3">
+      <span class="number-header">3.</span> The measurements (surprsingly) seem to depend on how they are taken
+   </button>
+   <div id="_3" class="collapse" style="margin-top:20px;">
+      <p>
+        palceholder
+      </p>
+   </div>
+  </div>
+
+
+  <div class="span6">
+   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_4">
+      <span class="number-header">4.</span> So, what's the answer?
+   </button>
+    <div id="_4" class="collapse" style="margin-top:20px;">
+      <p>
+        ph
+      </p>
+    </div>
+
+</div>
+
+
+
+  {% endblock %}

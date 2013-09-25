@@ -92,3 +92,6 @@ class graphdb:
         QUERY = QUERY % (author,related_author)
         results[author][related_author] = [i[0] for i in cypher.execute(self.db,QUERY)[0]]
     return results
+
+
+#START a=node:Person(name="Greiner, J."), b=node:Person(name="Klose, S.") MATCH p=allShortestPaths(a<-[:AUTHOR_OF*]->b) return relationships(p);
