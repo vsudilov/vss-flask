@@ -1,4 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-{% endblock %}
+<style>
+  img {
+    width:826px;
+    height:1169px;
+  }
+  .row {
+    margin-left:25%;
+  }
+</style>
+<div class="page-header">
+  <a style="margin-left:65%" href="/static/pdf/vss_resume.pdf" class="muted">Download as pdf</a>
+</div>
 
+<div class="row">
+  <img src="/static/images/cv_1.png">
+</div>
+
+<div class="row">
+  <img src="/static/images/cv_2.png">
+</div>
+{% endblock %}
