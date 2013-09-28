@@ -34,6 +34,10 @@ def projects():
 def mgii():
   return render_template('mgii.html')
 
+@app.route('/projects/grbs')
+def grbs():
+  return render_template('grbs.html')
+
 @app.route('/projects/parxiv/', methods=['get','post'])
 def parxiv():
   if request.method=='GET':

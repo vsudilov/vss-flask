@@ -58,6 +58,9 @@ class system{
       "nginx":
           ensure => installed,
           provider => apt;
+      "python-scipy":
+          ensure => installed,
+          provider => apt;
   }
 
 

@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+<script src="/static/js/d3.v3.min.js"></script>
+<script src="/static/js/superformula.js"></script>
+<script src="/static/js/queue.v1.min.js"></script>
+<script src="/static/js/mgii.js"></script>
 
 <style>
    button.btn-info{
@@ -11,6 +15,44 @@
       color:black;
    }
 
+   .collapse-text {
+    width:45%;
+    display: inline-block;
+   }
+   #svg-container {
+    width:45%;
+    display: inline-block;
+   }
+
+   ._2_grbspec {
+    width:49%;
+    display: inline-block;
+   }
+
+   ._2_qsospec {
+    width:49%;
+    display: inline-block;
+   }
+
+   .grb-axis path,
+   .grb-axis line {
+    stroke:yellow;
+    fill:none;
+    stroke-width: 1px;
+   }
+
+   .qso-axis path,
+   .qso-axis line {
+    stroke:#22AFF5;
+    fill:none;
+    stroke-width: 1px;
+   }
+
+
+   .axis text {
+    display: none;
+   }
+
 </style>
 
 <div class="page-header">
@@ -19,53 +61,84 @@
 
 
 <div class="row">
-  <div class="offset5 span6">
-   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_1">
-      <span class="number-header">1.</span> The universe is polluted by gas from stars
+  <div class="offset5 span10">
+   <button type="button" class="btn btn-info _1" data-toggle="collapse" data-target="#_1">
+      <span class="number-header">1.</span> The universe is filed with gas from stars
    </button>
     <div id="_1" class="collapse" style="margin-top:20px;">
-      <p>
-        During a star's lifetime and death, it ejects gases. The gases from many stars accumulate in their galaxy. From measurements of these various gases, we can construct a picture about the composition of even distant galaxies. These gases are a fossil record of a galaxy's history.
-      </p>
-    </div>
+      <div class="collapse-text">
+        <p>
+          During a star's <a href="http://en.wikipedia.org/wiki/Stellar_wind">lifetime</a> and <a href="http://en.wikipedia.org/wiki/Supernova">death</a>, it ejects gases. The gases from many stars accumulate in their host galaxy. From measurements of these such gases, we can construct a picture about the composition of even distant galaxies. These gases are a fossil record of a galaxy's history.
+        </p>
+        <p style="margin-top:10px;">
+          One important gas is MgII, which is once ionized magnesium. Magnesium is produced in abundance by <a href="http://en.wikipedia.org/wiki/Alpha_process">nuclear reactions</a> taking place in stars.
+        </p>
+      </div>
+      
+      <div id="svg-container" class="_1">
+      </div>
 
+    </div>
   </div>
-  <div class="span6">
-   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_2">
+</div>
+
+<div class="row">
+  <div class="offset5 span10">
+   <button type="button" class="btn btn-info _2" data-toggle="collapse" data-target="#_2">
       <span class="number-header">2.</span> To study the distant universe, we need to be able to see this gas
    </button>
     <div id="_2" class="collapse" style="margin-top:20px;">
-      <p>
-        palceholder
-      </p>
+      <div class="collapse-text">
+        <p>
+          palceholder
+        </p>
+      </div>
+      <div id="svg-container" >
+        <div id="sub-container" class="_2_grbspec">
+        </div>
+        <div id="sub-container" class="_2_qsospec">
+        </div>
+        <div id="sub-container" class="_2">
+        </div>
+      </div>
     </div>
   </div>
-
 </div>
 
-<div class="row" style="margin-top:50px;">
-  <div class="offset5 span6">
-   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_3">
+
+<div class="row">
+  <div class="offset5 span10">
+   <button type="button" class="btn btn-info _3" data-toggle="collapse" data-target="#_3">
       <span class="number-header">3.</span> The measurements (surprsingly) seem to depend on how they are taken
    </button>
    <div id="_3" class="collapse" style="margin-top:20px;">
-      <p>
-        palceholder
-      </p>
+      <div class="collapse-text">
+        <p>
+          palceholder
+        </p>
+      </div>
+
+      <div id="svg-container" class="_3">
+      </div>
    </div>
   </div>
+</div>
 
-
-  <div class="span6">
-   <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#_4">
+<div class="row">
+  <div class="offset5 span10">
+   <button type="button" class="btn btn-info _4" data-toggle="collapse" data-target="#_4">
       <span class="number-header">4.</span> So, what's the answer?
    </button>
     <div id="_4" class="collapse" style="margin-top:20px;">
-      <p>
-        ph
-      </p>
-    </div>
+      <div class="collapse-text">
+        <p>
+          palceholder
+        </p>
+      </div>
 
+      <div id="svg-container" class="_4">
+      </div>
+    </div>
 </div>
 
 
