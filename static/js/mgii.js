@@ -9,12 +9,13 @@ queue()
     .defer(d3.csv, "/static/spectra/qsospec.txt.resampled.absorber")
     .await(go);
 
-function go (error,grbspec, qsospec, grbspec_abs, qsospec_abc) {
+function go (error,grbspec, qsospec, grbspec_abs, qsospec_abs) {
     var Timer = function (func, arg, interval) {
         this.run = function () {
             if (this.running) {
                 return
             }
+            func(arg)
             this.id = setInterval(function () {func(arg)}, interval)
             this.running = true
         }
@@ -184,6 +185,7 @@ function go (error,grbspec, qsospec, grbspec_abs, qsospec_abc) {
     svg2_grbspec.append("path")
           .datum(grbspec)
           .attr("class", "line")
+          .attr("class","spectra")
           .attr('fill','none')
           .attr('stroke','yellow')
           .attr('stroke-width',1.5)
@@ -218,12 +220,92 @@ function go (error,grbspec, qsospec, grbspec_abs, qsospec_abc) {
     svg2_qsospec.append("path")
           .datum(qsospec)
           .attr("class", "line")
+          .attr('class',"spectra")
           .attr('fill','none')
           .attr('stroke',"#22AFF5")
           .attr('stroke-width',1.5)
-          .attr("d", line);     
+          .attr("d", line);  
+
+    var cloudg2 = svg2.append("g")
+        .attr("transform","translate("+(w/2)+",10)")
+        .attr('class','cloud')
+
+    cloudg2.append("path")
+        .attr('fill','red')
+        .attr('d',Cloud)
+        .attr('opacity',0.2)
+
+    cloudg2.append('text')    
+        .attr("text-anchor", "middle")
+        .attr('font-size', 10)
+        .attr('fill','white')
+        .attr('transform', 'translate(0,4)')
+        .text("MgII")
+
+    var moveCloud = function (cloudg2) {
+
+        cloudg2.transition()
+            .duration(5000)
+            .attr("transform","translate("+(w/2)+','+(h2-10)+")")
+            .transition()
+                .duration(5000).delay(5000)
+                .attr("transform","translate("+(w/2)+",10)")
 
 
+                //First pass: GRB
+        svg2_grbspec.selectAll("path.spectra")
+            .datum(grbspec_abs)
+            .transition().delay(1000)
+            .duration(1000)
+              .attr("d", line);
+
+        svg2_grbspec.selectAll("path.spectra")
+            .datum(grbspec)
+            .transition().delay(2000)
+            .duration(1000)
+              .attr("d", line);
+
+              //First pass: QSO
+        svg2_qsospec.selectAll("path.spectra")
+            .datum(qsospec_abs)
+            .transition().delay(2500)
+            .duration(1000)
+              .attr("d", line);
+
+        svg2_qsospec.selectAll("path.spectra")
+            .datum(qsospec)
+            .transition().delay(3500)
+            .duration(1000)
+              .attr("d", line);
+
+                //second pass: QSO
+        svg2_qsospec.selectAll("path.spectra")
+            .datum(qsospec_abs)
+            .transition().delay(5500)
+            .duration(1000)
+              .attr("d", line);
+
+        svg2_qsospec.selectAll("path.spectra")
+            .datum(qsospec)
+            .transition().delay(7000)
+            .duration(1000)
+              .attr("d", line);
+
+              //second pass: GRB
+        svg2_grbspec.selectAll("path.spectra")
+            .datum(grbspec_abs)
+            .transition().delay(7500)
+            .duration(1000)
+              .attr("d", line);
+
+        svg2_grbspec.selectAll("path.spectra")
+            .datum(grbspec)
+            .transition().delay(8500)
+            .duration(1000)
+              .attr("d", line);
+
+
+    }
 
     var newCloud = function () {
         var end_x = Math.random() * w,
@@ -316,7 +398,8 @@ function go (error,grbspec, qsospec, grbspec_abs, qsospec_abc) {
         new Timer(sparkleStar, [qso2,Star2], 1000),
         new Timer(sparkleStar, [grb2,Star2], 1000),
         new Timer(sparkleLOS, los2_grb, 1000),
-        new Timer(sparkleLOS, los2_qso, 1000)
+        new Timer(sparkleLOS, los2_qso, 1000),
+        new Timer(moveCloud, cloudg2, 20000)
     ] 
     }
 })
