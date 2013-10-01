@@ -5,6 +5,7 @@ from queries.neo4j import graphdb
 from queries.sql import sqldb
 import time
 import unicodedata
+import cPickle as pickle
 
 app = Flask(__name__)
 app.debug = True
@@ -45,28 +46,8 @@ def grond():
 @app.route('/projects/parxiv/', methods=['get','post'])
 def parxiv():
   if request.method=='GET':
-    start = time.time()
-    gdb = graphdb("http://localhost:7474/db/data/")
-    context = {}
-
-    results, metadata = gdb.get_top_firstauthors_by_papercount(limit=10)
-    context.update({'top_by_papercount':json.dumps(results)})
-    authors = [sanitize(i[0]) for i in results]
-    results = gdb.find_authors_relationships(authors)
-    context.update({'relationships_by_papercount':json.dumps(results)})
-
-    results, metadata = gdb.get_top_firstauthors_by_citationcount(limit=10)
-    context.update({'top_by_citationcount':json.dumps(results)})
-    authors = [sanitize(i[0]) for i in results]
-    results = gdb.find_authors_relationships(authors)
-    context.update({'relationships_by_citationcount':json.dumps(results)})
-
-    results, metadata = gdb.get_top_firstauthors_by_citationsperpaper(limit=10)
-    context.update({'top_by_citationsperpaper':json.dumps(results)})
-    authors = [sanitize(i[0]) for i in results]
-    results = gdb.find_authors_relationships(authors)
-    context.update({'relationships_by_citationsperpaper':json.dumps(results)})
-    print "This process took %0.2f seconds" % (time.time()-start)
+    with open('neo4j.cached','r') as f:
+      context = pickle.load(f)
 
     return render_template('projects/parxiv.html',**context)
 
