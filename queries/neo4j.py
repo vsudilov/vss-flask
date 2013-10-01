@@ -92,6 +92,39 @@ class graphdb:
         QUERY = QUERY % (author,related_author)
         results[author][related_author] = [i[0] for i in cypher.execute(self.db,QUERY)[0]]
     return results
+    #START a=node:Person(name="Greiner, J."), b=node:Person(name="Klose, S.") MATCH p=allShortestPaths(a<-[:AUTHOR_OF*]->b) return relationships(p);
+
+  def find_author_abstractwords(self,author,limit):
+    QUERY = '''
+      START author=node:Person(name="%s")
+      MATCH (author)-[:AUTHOR_OF]->(paper)<-[c:IN_ABSTRACT_OF]-(w)
+      RETURN distinct(w.word),sum(c.count)
+      ORDER BY sum(c.count) DESC
+      LIMIT %s;
+    '''
+    QUERY = QUERY % (author,limit)
+    results = cypher.execute(self.db,QUERY)
+    return results
 
 
-#START a=node:Person(name="Greiner, J."), b=node:Person(name="Klose, S.") MATCH p=allShortestPaths(a<-[:AUTHOR_OF*]->b) return relationships(p);
+  def find_author_titlewords(self,author,limit):
+    QUERY = '''
+      START author=node:Person(name="%s")
+      MATCH (author)-[:AUTHOR_OF]->(paper)<-[c:IN_TITLE_OF]-(w)
+      RETURN distinct(w.word),sum(c.count)
+      ORDER BY sum(c.count) DESC
+      LIMIT %s;
+    '''
+    QUERY = QUERY % (author,limit)
+    results = cypher.execute(self.db,QUERY)
+    return results
+
+  def find_author_affiliations(self,author):
+    QUERY = '''
+      START author=node:Person(name="%s")
+      MATCH (author)-[y:AFFILIATED_WITH]->(institute)
+      RETURN distinct(institute)
+    '''
+    QUERY = QUERY % (author,)
+    results = cypher.execute(self.db,QUERY)
+    return results

@@ -5,3 +5,6 @@ static/js/jquery*
 .vagrant
 d3.v3.min.js
 parxiv.db
+.*
+.bak
+.xlsx
