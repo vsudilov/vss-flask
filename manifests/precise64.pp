@@ -7,11 +7,12 @@ class {
       'system':         stage => first;
       'neo4j':          stage => main;
       'python_modules': stage => main;
-      'ruby_modules':   stage => main;
+      #'ruby_modules':   stage => main;
       'bootstrap_js':    stage => main;
       'jquery':         stage => main;
       'd3js':           stage => main;
-      'sass-watch':	stage => last;
+      'run_webserver':   stage => last;
+      #'sass-watch':	stage => last;
 }
 
 # Run apt-get update once on VM creation
@@ -61,6 +62,9 @@ class system{
       "python-scipy":
           ensure => installed,
           provider => apt;
+      "gunicorn":
+          ensure => installed,
+          provider => apt;
   }
 
 
@@ -78,9 +82,9 @@ class bootstrap_js {
   exec {
     "unzip_and_move":
       cwd => "/home/vagrant/",
-      command => "/usr/bin/unzip /home/vagrant/bootstrap.zip && /bin/mv /home/vagrant/bootstrap /home/vagrant/webvss2/static/",
+      command => "/usr/bin/unzip /home/vagrant/bootstrap.zip && /bin/mv /home/vagrant/bootstrap /var/www/static/",
       user => vagrant,
-      creates => "/home/vagrant/webvss2/static/bootstrap",
+      creates => "/var/www/static/bootstrap",
       require => Exec["download_bootstrap"];
   }
 }
@@ -91,8 +95,8 @@ class bootstrap_js {
 class jquery {
   exec {
     "download_jquery":
-      command => "/usr/bin/wget http://code.jquery.com/jquery-2.0.2.min.js -O /home/vagrant/webvss2/static/js/jquery-2.0.2.min.js",
-      creates => "/home/vagrant/webvss2/static/js/jquery-2.0.2.min.js";
+      command => "/usr/bin/wget http://code.jquery.com/jquery-2.0.2.min.js -O /var/www/static/js/jquery-2.0.2.min.js",
+      creates => "/var/www/static/js/jquery-2.0.2.min.js";
   }
 }
 
@@ -102,8 +106,8 @@ class jquery {
 class d3js {
   exec {
     "download_d3":
-      command => "/usr/bin/wget http://d3js.org/d3.v3.min.js -O /home/vagrant/webvss2/static/js/d3.v3.min.js",
-      creates => "/home/vagrant/webvss2/static/js/d3.v3.min.js";
+      command => "/usr/bin/wget http://d3js.org/d3.v3.min.js -O /var/www/static/js/d3.v3.min.js",
+      creates => "/var/www/static/js/d3.v3.min.js";
   }
 }
 
@@ -154,9 +158,6 @@ class python_modules{
       "Flask":
           ensure => installed,
           provider => pip;
-      "uwsgi":
-          ensure => installed,
-          provider => pip;
       "xlrd":
           ensure => installed,
           provider => pip;
@@ -178,10 +179,31 @@ class ruby_modules{
   }
 }
 
-class sass-watch{
-  exec {
-   "sass-watch":
-     command => "/usr/local/bin/sass --watch /home/vagrant/webvss2/static/css/sass/style.scss:/home/vagrant/webvss2/static/css/style.css >/dev/null &",
-     user => vagrant;
-       }
+
+class run_webserver {
+  file {'/etc/nginx/nginx.conf':
+    source => "/var/www/manifests/nginx.conf",
+    owner => root,
+    group => root;
+  }
+
+  exec { "restart_nginx":
+    command => "/etc/init.d/nginx restart",
+    user => root,
+    require => File['/etc/nginx/nginx.conf'];
+  }
+  exec { "start_gunicorn":
+    command => "/usr/bin/gunicorn -c /var/www/manifests/gunicorn.conf.py app:app",
+    user => vagrant,
+    cwd => "/var/www",
+    require => Exec['restart_nginx'];
+  }
 }
+
+#class sass-watch{
+#  exec {
+#   "sass-watch":
+#     command => "/usr/local/bin/sass --watch /var/www/static/css/sass/style.scss:/var/www/static/css/style.css >/dev/null &",
+#     user => vagrant;
+#       }
+#}

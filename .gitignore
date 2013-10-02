@@ -6,5 +6,5 @@ static/js/jquery*
 d3.v3.min.js
 parxiv.db
 .*
-.bak
-.xlsx
+*.bak
+*.xlsx
