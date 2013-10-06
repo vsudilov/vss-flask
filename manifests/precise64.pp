@@ -5,7 +5,7 @@ stage { 'pre': before => Stage['first'] }
 class {
       'apt_update':     stage => pre;
       'system':         stage => first;
-      'neo4j':          stage => main;
+#      'neo4j':          stage => main;
       'python_modules': stage => main;
       #'ruby_modules':   stage => main;
       'bootstrap_js':    stage => main;
