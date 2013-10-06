@@ -38,9 +38,9 @@ def contact():
       if not form.antispam.data:
         #We will only email if the bot trap is not checked
         msg = MIMEText("%s" % (form.message.data,))
-        msg["From"] = "%s" % (form.email.data,)
+        msg["From"] = "contactform@vsudilovsky.com")
         msg["To"] = "vsudilovsky@gmail.com"
-        msg["Subject"] = "[vsudilovsky.com] (%s): %s" % (form.name.data,form.subject.data,)
+        msg["Subject"] = "[vsudilovsky.com] (%s:%s): %s" % (form.name.data,form.email.data,form.subject.data,)
         p = Popen(["/usr/sbin/sendmail", "-toi"], stdin=PIPE)
         p.communicate(msg.as_string())
       return render_template('contact_success.html')
