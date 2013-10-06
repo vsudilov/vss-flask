@@ -7,3 +7,4 @@ preload_app = True
 chdir = '/var/www/'
 daemon = True
 debug = False
+errorlog = '/tmp/gunicorn.error.log'
