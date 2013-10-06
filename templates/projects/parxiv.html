@@ -237,16 +237,16 @@ $(document).ready(function(){
         
         var scale_title = d3.scale.linear()
           .domain(d3.extent(w_title, function(d) {return d.size}))
-          .range([7,40])
+          .range([12,42])
 
 
         var scale_abstract = d3.scale.linear()
           .domain(d3.extent(w_abstract, function(d) {return d.size}))
-          .range([7,40])
+          .range([12,42])
 
         d3.layout.cloud().size([300, 150])
             .words(w_abstract)
-            .padding(5)
+            .padding(4)
             .rotate(function() { return ~~(Math.random() * 2) * 90; })
             //.font("Impact")
             .fontSize(function(d) { return scale_abstract(d.size); })
@@ -255,7 +255,7 @@ $(document).ready(function(){
 
         d3.layout.cloud().size([300, 150])
             .words(w_title)
-            .padding(5)
+            .padding(4)
             .rotate(function() { return ~~(Math.random() * 2) * 90; })
             //.font("Impact")
             .fontSize(function(d) { return scale_title(d.size); })
