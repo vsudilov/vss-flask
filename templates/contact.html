@@ -1,9 +1,116 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="page-header">
-  <div style="margin-left:30%">
-  Contact form coming. For now, please contact me <a href="#" onclick="JavaScript:window.location='mailto:'+'vsud'+'ilovsky'+'@'+'gma'+'il'+'.c'+'om'" >directly</a>
+<style>
+  form input, textarea{
+    width:150%;
+  }
+  form label {
+    font-size:1.1em;
+
+  }
+  .small {
+    font-size: 0.7em;
+
+  }
+
+  .as {
+    position:absolute;
+    left:-8000px;
+    border:1px solid red;
+  }
+
+
+</style>
+
+<div class="row">
+  <div class="offset3 span3">
+     <div class="form-errors">
+        {% for message in form.name.errors %}
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Opps!</strong> {{message}}
+        </div>
+        {% endfor %}
+
+        {% for message in form.email.errors %}
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Opps!</strong> {{message}}
+        </div>
+        {% endfor %}
+
+        {% for message in form.subject.errors %}
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Opps!</strong> {{message}}
+        </div>
+        {% endfor %}
+
+        {% for message in form.antispam.errors %}
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Opps!</strong> {{message}}
+        </div>
+        {% endfor %}
+
+        {% for message in form.message.errors %}
+        <div class="alert">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <strong>Opps!</strong> {{message}}
+        </div>
+        {% endfor %}
+    </div>
   </div>
-</div>
+
+
+  <div class="span6">
+
+  <form action="{{ url_for('contact') }}" method=post class="form-horizontal">
+    {{ form.hidden_tag() }}
+ 
+    <div class="control-group">
+      <label class="control-label {%if form.name.errors%}text-warning{%endif%}" for="name">Name</label> 
+      <div class="controls">
+        {{form.name}}
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label {%if form.email.errors%}text-warning{%endif%}" for="email">Email</label> 
+      <div class="controls">
+        {{form.email}}
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label {%if form.subject.errors%}text-warning{%endif%}" for="subject">Subject</label> 
+      <div class="controls">
+        {{form.subject}}
+      </div>
+    </div>
+
+    <div class="control-group as">
+      <label class="control-label">{{ form.antispam.label }}</label> 
+      <div class="controls">
+        {{form.antispam}}
+      </div>
+    </div>
+ 
+
+    <div class="control-group">
+      <label class="control-label {%if form.message.errors%}text-warning{%endif%}" for="message">Message </br><span class="small">(300 characters)</span></label> 
+      <div class="controls">
+        {{form.message(rows=10)}}
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <input class="btn" id="submit" name="submit" type="submit" value="Send">
+      </div>
+    </div>
+  </form>
+  </div>
+  </div>
 {% endblock %}
 
