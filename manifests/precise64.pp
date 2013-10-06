@@ -83,7 +83,7 @@ class bootstrap_js {
     "unzip_and_move":
       cwd => "/home/vagrant/",
       command => "/usr/bin/unzip /home/vagrant/bootstrap.zip && /bin/mv /home/vagrant/bootstrap /var/www/static/",
-      user => vagrant,
+      user => root,
       creates => "/var/www/static/bootstrap",
       require => Exec["download_bootstrap"];
   }
