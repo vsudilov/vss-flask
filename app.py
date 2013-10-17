@@ -8,6 +8,7 @@ from queries.sql import sqldb
 import time
 import unicodedata
 from forms import ContactForm
+import cPickle as pickle
 
 app = Flask(__name__)
 app.debug = False
