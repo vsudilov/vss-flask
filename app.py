@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, send_from_directory
 from email.mime.text import MIMEText
 from subprocess import Popen, PIPE
 import json
@@ -19,6 +19,10 @@ def sanitize(value): #Quick hack until the database is sanitized
   if type(value)==unicode:
     return unicodedata.normalize('NFKD',value.replace(u'\xc3\xbc','ue')).encode('ascii', 'ignore') #Manually put "ue" in u-umlaut...Need to use a better solution eventually
   return value
+
+@app.route('/robots.txt')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 @app.route('/')
 def home():
