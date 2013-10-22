@@ -102,6 +102,89 @@ var bands = {
   'H':1647,
   'K':2171,
   }
+
+var margin = {
+  "left":10,
+  "right":10,
+  "top":10,
+  "bottom":10,
+}
+
+fakedata = [
+  {"x":1,"y":1},
+  {"x":2,"y":12},
+  {"x":5,"y":15},
+  {"x":9,"y":18},
+  {"x":15,"y":19},
+]
+
+var h = 194*2-margin.top-margin.bottom,
+    w = 357*2-margin.left-margin.right
+
+var x = d3.scale.linear()
+    .range([0,w])
+    .domain(d3.extent(fakedata, function(d){return d.x}));
+
+var y = d3.scale.linear()
+    .range([h,0])
+    .domain(d3.extent(fakedata, function(d){return d.y}));;
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .ticks(1)
+    .tickSize(1);
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(1)
+    .tickSize(1);
+
+var sedContainer = d3.select('.svg-container-sed')
+
+var sed = sedContainer.append("svg")
+    .attr("width",w+margin.left+margin.right)
+    .attr("height",h+margin.top+margin.bottom)
+    .attr('style','border:1px solid black;')
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+sed.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + h + ")")
+    .call(xAxis)
+    .append('text')
+        .attr('fill','black')
+        .attr('x',w/2)
+        .attr('y',0)
+        .style("text-anchor", "middle")
+        .text("Wavelength");
+
+sed.append("g")
+    .attr("class", "axis")
+    .call(yAxis)
+    .append('text')
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("x",-50)
+        .attr("dy", ".71em")
+        .attr('fill','black')
+        .style("text-anchor", "end")
+        .text("Brightness");
+
+
+sed.selectAll("circle")
+  .data(fakedata)
+  .enter()
+    .append("circle")
+    .attr("cx", function(d){return x(d.x)})
+    .attr("cy", function(d){return y(d.y)})
+    .attr("r",5)
+    .attr("fill","black")
+
+
+
 var imgContainers = {}
 
 //Setup each image
@@ -111,12 +194,12 @@ $.each(bands,function(band,wavelength){
 
   var thisContainer = d3.select('.svg-container-img').attr("data-name",band)
 
-  svg = thisContainer.append("svg")
+  var img = thisContainer.append("svg")
     .attr("width",w)
     .attr("heigh",h)
 
   //image
-  svg.append("image")
+  img.append("image")
     .attr("xlink:href","/static/images/"+band+".png")
     .attr("height",h)
     .attr("width",w)
@@ -124,16 +207,15 @@ $.each(bands,function(band,wavelength){
     .attr("y",0)
 
   //image wavelength label
-  svg.append("text")
+  img.append("text")
     .attr("x",w-80)
     .attr("y",h-50)
     .attr("fill","#66FF33")
     .style("font-size","20px")
     .text(wavelength+" nm")
 
-
   //mask
-  svg.append("rect")
+  img.append("rect")
     .attr("class","mask")
     .attr("x",0)
     .attr("y",0)
@@ -143,7 +225,7 @@ $.each(bands,function(band,wavelength){
     .style("background","black")
 
   //group for mouseover outlines on png
-  var source = svg.selectAll("g")
+  var source = img.selectAll("g")
     .data(sourceData)
     .enter()
     .append("g")
