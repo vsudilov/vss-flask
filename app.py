@@ -9,6 +9,7 @@ import time
 import unicodedata
 from forms import ContactForm
 import cPickle as pickle
+from lib.nginx_logfile import Logfile
 
 app = Flask(__name__)
 app.debug = False
@@ -19,6 +20,14 @@ def sanitize(value): #Quick hack until the database is sanitized
   if type(value)==unicode:
     return unicodedata.normalize('NFKD',value.replace(u'\xc3\xbc','ue')).encode('ascii', 'ignore') #Manually put "ue" in u-umlaut...Need to use a better solution eventually
   return value
+
+@app.route('/visitors/')
+def visitors():
+  lf = Logfile()
+  lf.parseIPs()
+  timeRange = '%s - %s' % (lf.startDate.strftime('%d/%b/%Y'),lf.endDate.strftime('%d/%b/%Y'))
+  context = {'data':json.dumps(lf.visitors),'timeRange':timeRange}
+  return render_template('visitors.html',**context)
 
 @app.route('/robots.txt')
 def static_from_root():

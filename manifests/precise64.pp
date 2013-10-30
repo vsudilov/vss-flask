@@ -164,12 +164,13 @@ class python_modules{
       "py2neo":
           ensure => installed,
           provider => pip;
-
       "flask-wtf":
           ensure => installed,
           provider => pip;
-
       "flask-mail":
+          ensure => installed,
+          provider => pip;
+      "pygeoip":
           ensure => installed,
           provider => pip;
   }

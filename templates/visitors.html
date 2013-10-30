@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="/static/js/topojson.v1.min.js"></script>
+<script src="/static/js/datamaps.world.min.js"></script>
+<script src="/static/js/visitors.js"></script>
+<script>
+  $(document).ready(function(){
+
+    var data = {{data|safe}}
+    startVis(data)
+
+  }); //end $(document).ready
+</script>
+
+<style>
+  .svg-container {
+    width: 1200px;
+    height: 720px;
+    border: 1px solid black;
+  }
+</style>
+
+<div class="page-header">
+  <div class="offset7">
+    <h3>Visitors <span style="font-size:65%">{{timeRange}}</span></h3>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="svg-container"></div>
+  </div>
+</div>
+
+{% endblock %}
