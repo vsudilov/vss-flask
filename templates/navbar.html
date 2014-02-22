@@ -1,21 +1,22 @@
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigaton">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-collapse">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="brand" href="/">VS</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li {% if request.path == "/" %} class="active" {% endif %}><a href="/">home</a></li>
-          <li {% if request.path == "/projects/" %} class="active" {% endif %}><a href="/projects/">projects</a></li>
-          <li {% if request.path == "/cv/" %} class="active" {% endif %}><a href="/cv/">CV</a></li>
-          <li> <a href="https://github.com/vsudilov/">github</a></li>
-          <li {% if request.path == "/contact/" %} class="active" {% endif %}><a href="/contact/">contact</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
+      <a class="navbar-brand" href="/">VS</a>
     </div>
+    <div class="collapse navbar-collapse" id="nav-collapse">
+      <ul class="nav navbar-nav" style="margin-left:20%;">
+        <li {% if request.path == "/" %} class="active" {% endif %}><a href="/">home</a></li>
+        <li {% if request.path == "/projects/" %} class="active" {% endif %}><a href="/projects/">projects</a></li>
+        <li {% if request.path == "/cv/" %} class="active" {% endif %}><a href="/cv/">CV</a></li>
+        <li> <a href="https://github.com/vsudilov/">github</a></li>
+        <li {% if request.path == "/contact/" %} class="active" {% endif %}><a href="/contact/">contact</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
   </div>
-</div>
+</nav>

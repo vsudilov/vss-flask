@@ -75,16 +75,16 @@ class system{
 class bootstrap_js {
   exec{
     "download_bootstrap":
-      command => "/usr/bin/wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip -O /home/vagrant/bootstrap.zip",
+      command => "/usr/bin/wget https://github.com/twbs/bootstrap/releases/download/v3.1.1/bootstrap-3.1.1-dist.zip -O /home/vagrant/bootstrap.zip",
       user => vagrant,
       creates => "/home/vagrant/bootstrap.zip";
   }
   exec {
     "unzip_and_move":
       cwd => "/home/vagrant/",
-      command => "/usr/bin/unzip /home/vagrant/bootstrap.zip && /bin/mv /home/vagrant/bootstrap /var/www/static/",
+      command => "/usr/bin/unzip -d /var/www/static/ /home/vagrant/bootstrap.zip",
       user => root,
-      creates => "/var/www/static/bootstrap",
+      creates => "/var/www/static/bootstrap-3.1.1-dist",
       require => Exec["download_bootstrap"];
   }
 }

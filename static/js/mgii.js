@@ -1,18 +1,18 @@
 $(document).ready(function(){
 //http://jsfiddle.net/h5rnW/8/
 
-$('#_1').collapse({
-    toggle: false
-})
-$('#_2').collapse({
-    toggle: false
-})
-$('#_3').collapse({
-    toggle: false
-})
-$('#_4').collapse({
-    toggle: false
-})
+// $('#_1').collapse({
+//     toggle: true
+// })
+// $('#_2').collapse({
+//     toggle: true
+// })
+// $('#_3').collapse({
+//     toggle: true
+// })
+// $('#_4').collapse({
+//     toggle: true
+// })
 
 var data //load data
 queue()
@@ -43,11 +43,11 @@ function go (error,grbspec, qsospec, grbspec_abs, qsospec_abs, qso_dndz, grb_dnd
     }
 
     //// Define svg containers
-    var w = $('div#svg-container._1').width(),
+    var w = $('.panel').width()/2,
         h = 200,
         h2 = 200,
         margin2 = {top: 5, right: 5, bottom: 15, left: 15},
-        gw2 = $('div#sub-container._2_grbspec').width()-margin2.left-margin2.right,
+        gw2 = (w-margin2.left-margin2.right)/2,
         gh2 = h2/1.5-margin2.top-margin2.bottom
 
     var svg1 = d3.select('div#svg-container._1').append('svg')
@@ -595,43 +595,32 @@ function go (error,grbspec, qsospec, grbspec_abs, qsospec_abs, qso_dndz, grb_dnd
         })  
     }
 
-    var toggleCollapses = function(current) {
-        $.each(['#_1','#_2','#_3','#_4'], function(index,id){
-            if (current != id ) {
-                $(id).collapse('hide')
-            }
-        })
-    }
 
-    $('#_1').on('show', function (){
+    $('#_1').on('show.bs.collapse', function (){
         toggleTimers(section1timers)
-        toggleCollapses('#_1')
     })
-    $('#_1').on('hide', function (){
+    $('#_1').on('hide.bs.collapse', function (){
         toggleTimers(section1timers)
     })
 
-    $('#_2').on('show', function (){
+    $('#_2').on('show.bs.collapse', function (){
         toggleTimers(section2timers)
-        toggleCollapses('#_2')
     })
-    $('#_2').on('hide', function (){
+    $('#_2').on('hide.bs.collapse', function (){
         toggleTimers(section2timers)
     })
 
-    $('#_3').on('show', function (){
+    $('#_3').on('show.bs.collapse', function (){
         toggleTimers(section3timers)
-        toggleCollapses('#_3')
     })
-    $('#_3').on('hide', function (){
+    $('#_3').on('hide.bs.collapse', function (){
         toggleTimers(section3timers)
     })
 
-    $('#_4').on('show', function (){
+    $('#_4').on('show.bs.collapse', function (){
         toggleTimers(section4timers)
-        toggleCollapses('#_4')
     })
-    $('#_4').on('hide', function (){
+    $('#_4').on('hide.bs.collapse', function (){
         toggleTimers(section4timers)
     })
 

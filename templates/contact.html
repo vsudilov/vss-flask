@@ -1,116 +1,106 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-  form input, textarea{
-    width:150%;
-  }
-  form label {
-    font-size:1.1em;
-
-  }
   .small {
     font-size: 0.7em;
 
   }
-
   .as {
     position:absolute;
     left:-8000px;
     border:1px solid red;
   }
-
-
 </style>
+<div class="container">
 
-<div class="row">
-  <div class="offset3 span3">
-     <div class="form-errors">
-        {% for message in form.name.errors %}
-        <div class="alert">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Opps!</strong> {{message}}
+
+    <div class="col-sm-10">
+
+    <form action="{{ url_for('contact') }}" method=post class="form-horizontal" role="form">
+      {{ form.hidden_tag() }}
+   
+      <div class="form-group">
+        <label class="control-label col-sm-2 {%if form.name.errors%}text-warning{%endif%}" for="name">Name</label> 
+        <div class="col-sm-10">
+          {{form.name(class_="form-control")}}
         </div>
-        {% endfor %}
+      </div>
 
-        {% for message in form.email.errors %}
-        <div class="alert">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Opps!</strong> {{message}}
+      <div class="form-group">
+        <label class="control-label col-sm-2 {%if form.email.errors%}text-warning{%endif%}" for="email">Email</label> 
+        <div class="col-sm-10">
+          {{form.email(class_="form-control")}}
         </div>
-        {% endfor %}
+      </div>
 
-        {% for message in form.subject.errors %}
-        <div class="alert">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Opps!</strong> {{message}}
+      <div class="form-group">
+        <label class="control-label col-sm-2 {%if form.subject.errors%}text-warning{%endif%}" for="subject">Subject</label> 
+        <div class="col-sm-10">
+          {{form.subject(class_="form-control")}}
         </div>
-        {% endfor %}
+      </div>
 
-        {% for message in form.antispam.errors %}
-        <div class="alert">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Opps!</strong> {{message}}
+      <div class="form-group as">
+        <label class="control-label col-sm-2">{{ form.antispam.label }}</label> 
+        <div class="controls">
+          {{form.antispam(class_="form-control")}}
         </div>
-        {% endfor %}
+      </div>
+   
 
-        {% for message in form.message.errors %}
-        <div class="alert">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Opps!</strong> {{message}}
+      <div class="form-group">
+        <label class="control-label col-sm-2 {%if form.message.errors%}text-warning{%endif%}" for="message">Message </br><span class="small">(300 characters)</span></label> 
+        <div class="col-sm-10">
+          {{form.message(rows=10,class_="form-control")}}
         </div>
-        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-3 col-sm-offset-2">
+          <input class="btn" id="submit" name="submit" type="submit" value="Send">
+        </div>
+      </div>
+    </form>
     </div>
-  </div>
+    <div class="col-sm-2">
+       <div class="form-errors">
+          {% for message in form.name.errors %}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opps!</strong> {{message}}
+          </div>
+          {% endfor %}
 
+          {% for message in form.email.errors %}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opps!</strong> {{message}}
+          </div>
+          {% endfor %}
 
-  <div class="span6">
+          {% for message in form.subject.errors %}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opps!</strong> {{message}}
+          </div>
+          {% endfor %}
 
-  <form action="{{ url_for('contact') }}" method=post class="form-horizontal">
-    {{ form.hidden_tag() }}
- 
-    <div class="control-group">
-      <label class="control-label {%if form.name.errors%}text-warning{%endif%}" for="name">Name</label> 
-      <div class="controls">
-        {{form.name}}
+          {% for message in form.antispam.errors %}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opps!</strong> {{message}}
+          </div>
+          {% endfor %}
+
+          {% for message in form.message.errors %}
+          <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Opps!</strong> {{message}}
+          </div>
+          {% endfor %}
       </div>
     </div>
 
-    <div class="control-group">
-      <label class="control-label {%if form.email.errors%}text-warning{%endif%}" for="email">Email</label> 
-      <div class="controls">
-        {{form.email}}
-      </div>
-    </div>
-
-    <div class="control-group">
-      <label class="control-label {%if form.subject.errors%}text-warning{%endif%}" for="subject">Subject</label> 
-      <div class="controls">
-        {{form.subject}}
-      </div>
-    </div>
-
-    <div class="control-group as">
-      <label class="control-label">{{ form.antispam.label }}</label> 
-      <div class="controls">
-        {{form.antispam}}
-      </div>
-    </div>
- 
-
-    <div class="control-group">
-      <label class="control-label {%if form.message.errors%}text-warning{%endif%}" for="message">Message </br><span class="small">(300 characters)</span></label> 
-      <div class="controls">
-        {{form.message(rows=10)}}
-      </div>
-    </div>
-
-    <div class="control-group">
-      <div class="controls">
-        <input class="btn" id="submit" name="submit" type="submit" value="Send">
-      </div>
-    </div>
-  </form>
-  </div>
-  </div>
+</div>
 {% endblock %}
 
