@@ -59,7 +59,8 @@ def contact():
       return render_template('contact.html', form=form)
     else:
       if not form.antispam.data: #We will only email if the bot trap is not checked
-        pool.apply_async(contactFromSendmail, [form])
+        pool = Pool(processes=1)
+	pool.apply_async(contactFromSendmail, [form])
       return render_template('contact_success.html')
  
   elif request.method == 'GET':
