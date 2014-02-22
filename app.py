@@ -10,6 +10,7 @@ import unicodedata
 from forms import ContactForm
 import cPickle as pickle
 from lib.nginx_logfile import Logfile
+from multiprocessing import Pool
 
 app = Flask(__name__)
 app.debug = False
@@ -41,6 +42,14 @@ def home():
 def cv():
   return render_template('cv.html')
 
+def contactFromSendmail(form):
+  msg = MIMEText("%s" % (form.message.data,))
+  msg["From"] = "contact@www.vsudilovsky.com"
+  msg["To"] = "vsudilovsky@gmail.com"
+  msg["Subject"] = "[vsudilovsky.com] (%s:%s): %s" % (form.name.data,form.email.data,form.subject.data,)
+  p = Popen(["/usr/sbin/sendmail", "-toi"], stdin=PIPE)
+  p.communicate(msg.as_string())
+
 @app.route('/contact/',methods=['get','post'])
 def contact():
   form = ContactForm()
@@ -49,14 +58,8 @@ def contact():
     if not form.validate():
       return render_template('contact.html', form=form)
     else:
-      if not form.antispam.data:
-        #We will only email if the bot trap is not checked
-        msg = MIMEText("%s" % (form.message.data,))
-        msg["From"] = "contact_form"
-        msg["To"] = "vsudilovsky@gmail.com"
-        msg["Subject"] = "[vsudilovsky.com] (%s:%s): %s" % (form.name.data,form.email.data,form.subject.data,)
-        p = Popen(["/usr/sbin/sendmail", "-toi"], stdin=PIPE)
-        p.communicate(msg.as_string())
+      if not form.antispam.data: #We will only email if the bot trap is not checked
+        pool.apply_async(contactFromSendmail, [form])
       return render_template('contact_success.html')
  
   elif request.method == 'GET':
