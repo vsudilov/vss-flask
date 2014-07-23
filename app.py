@@ -83,6 +83,10 @@ def grbs():
 def grond():
   return render_template('grond.html')
 
+@app.route('/projects/solr-benchmarking')
+def solr_benchmarking():
+  return render_template('solr_benchmarking.html')
+
 @app.route('/projects/parxiv/', methods=['get','post'])
 def parxiv():
   if request.method=='GET':

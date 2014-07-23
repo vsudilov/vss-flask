@@ -30,7 +30,8 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 5000, host: 5000
   
   config.vm.synced_folder ".", "/var/www/"
-
+  config.vm.synced_folder "../solr-benchmarking", "/solr-benchmarking"
+  
   config.vm.host_name = "precise64-vss-flask"
 
   config.vm.provider "virtualbox" do |v|
