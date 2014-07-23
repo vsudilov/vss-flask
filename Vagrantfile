@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant::Config.run do |config|
+Vagrant.configure("2") do |config|
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
@@ -27,20 +27,16 @@ Vagrant::Config.run do |config|
   # physical device on your network.
   # config.vm.network :bridged
 
-  # Forward a port from the guest to the host, which allows for outside
-  # computers to access the VM, whereas host only networking does not.
-  config.vm.forward_port 5000, 5000
-  config.vm.forward_port 7474, 7474
-  config.vm.forward_port 80, 8080
-  config.vm.forward_port 8000, 8081
-  # Share an additional folder to the guest VM. The first argument is
-  # an identifier, the second is the path on the guest to mount the
-  # folder, and the third is the path on the host to the actual folder.
+  config.vm.network :forwarded_port, guest: 5000, host: 5000
   
-  config.vm.share_folder "v-data", "/var/www/", "./"
+  config.vm.synced_folder ".", "/var/www/"
 
-  config.vm.customize ["modifyvm", :id, "--memory", 2048, "--name", "precise64-vss-flask"]
   config.vm.host_name = "precise64-vss-flask"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2000
+    v.cpus = 2
+  end
 
   # Enable provisioning with Puppet stand alone.  Puppet manifests
   # are contained in a directory path relative to this Vagrantfile.
