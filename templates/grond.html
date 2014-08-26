@@ -1,19 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<script src="/static/js/grond.js">
-</script>
+<script src="/static/js/grond.js"></script>
 
 <style>
   .svg-container-img svg {
     margin-right: 5px;
     border: 1px solid black;
   }
-
+  .h2 {
+    font-size: 2em;
+  }
+  .summary {
+      overflow: hidden;
+      margin-bottom: 15px;
+      padding-bottom:10px;
+  }
+  .summary-image {
+    -webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+  }
+  .summary-image.pull-left {
+      margin-right: 40px;
+  }
 </style>
-<!-- 
-<div class="page-header">
-Page-header
-</div> -->
+
+
+
+<div class="container">
+  <div class="summary">
+    <div class="h2 summary-heading">
+        The Gamma-ray Optical and Near-IR Detector
+    </div>
+    <div class="lead">
+      <img class="summary-image img-rounded img-responsive pull-left" src="/static/images/grond.jpg" style="width:500px;"></img>
+      <p>
+        <a href="http://en.wikipedia.org/wiki/Gamma-Ray_Burst_Optical/Near-Infrared_Detector">GROND</a> is detector system that is mounted on a 2.2m telescope in La Silla Observatory, Chile. A large part of my time as a graduate student involved working with GROND. I worked with GROND by performing observations and data analysis on-site, and by implementing code to help operate it remotely.
+      </p>
+      <p>
+        GROND detects light simultaneously in 7 filters. Stars and other astronomical objects emit different amounts of light in these filters, and some physical properties can be measured by their relative contributions.
+      </p>
+      <p>
+        Below is an image taken by GROND, repeated in its 7 filters. <b>Mouseover</b> an object see what we can learn about it!
+      </p>
+    </div>
+  </div>
+</div>
 
 <div class="container">
   <div class="row">
@@ -33,6 +65,5 @@ Page-header
         <div class="svg-container-sed"></div>
     </div>
   </div>
-
 </div>
 {% endblock %}
