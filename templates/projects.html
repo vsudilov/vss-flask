@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-  .hero-unit {
-    width:250px;
-    height:200px;
+  .container {
+    margin-top: 2em;
   }
 </style>
 
@@ -12,91 +11,92 @@ $(document).ready(function(){
   $('btn.disabled').prop('disabled', true)
 });
 </script>
-<!-- 
-<div class="container-fluid">
-  <div class="col-md-12">
-      <div class="row">
-          <div class="col-sm-2"> -->
 
 
 <div class="container">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="jumbotron">
-        <h2>Parxiv</h2>
-        <p>Visualization of astronomers as authors</p>
-        <p>
-        <a class="btn btn-primary btn-large" href="/projects/parxiv">
-        View more
-        </a>
-        </p>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/projects/parxiv">Parxiv</a>
+        </div>
+        <div class="panel-body">
+          Visualization of astronomers as authors
         </div>
       </div>
-
-      <div class="col-sm-4">
-        <div class="jumbotron">
-        <h2>Intergalactic Magnesium</h2>
-        <p>How the universe looks depends on how you look at it</p>
-        <p>
-        <a class="btn btn-primary btn-large" href="/projects/mgii">
-        View more
-        </a>
-        </p>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="jumbotron">
-        <h2>Gamma ray Bursts</h2>
-        <p>Tracking the most energic events in the (known) universe</p>
-        <p>
-        <a class="btn btn-primary btn-large disabled" href="#/projects/grbs">
-        Coming soon <i class="icon-time icon-white"></i>
-        </a>
-        </p>
-        </div>
-      </div>
-
     </div>
+  <!-- </div> -->
 
-    <div class="row">
-      <div class="col-sm-4">
-        <div class="jumbotron">
-        <h2>GROND</h2>
-        <p>The gamma-ray burst optical and near infrared detector @ LSO, Chile</p>
-        <p>
-        <a class="btn btn-primary btn-large disabled" href="#/projects/grond">
-        Coming soon <i class="icon-time icon-white"></i>
-        </a>
-        </p>
+  <!-- <div class="row"> -->
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/projects/mgii">Intergalactic Magnesium</a>
         </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="jumbotron">
-        <h2>Visitors</h2>
-        <p>Check out where traffic to this site comes from</p>
-        <p>
-        <a class="btn btn-primary btn-large" href="/visitors/">
-        View more
-        </a>
-        </p>
+        <div class="panel-body">
+          Does the method with which we observe change the observation itself?
         </div>
       </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/projects/#grbs">Gamma ray Bursts</a>
+        </div>
+        <div class="panel-body">
+          Tracking the most energic events in the known universe (Coming soon <span class="glyphicon glyphicon-dashboard"></span>)
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+
+  <!-- <div class="row"> -->
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/projects/#grond">GROND</a>
+        </div>
+        <div class="panel-body">
+          The gamma-ray burst optical and near infrared detector @ LSO, Chile (Coming soon <span class="glyphicon glyphicon-dashboard"></span>)
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/projects/solr-benchmarking">Benchmarking Solr for the ADS</a>
+        </div>
+        <div class="panel-body">
+          Quantifying the performance of the ADS's implementation of Solr on AWS
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+
+
+  <!-- <div class="row"> -->
+    <div class="col-md-6">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <a class="btn btn-primary" href="/visitors/">Visitors</a>
+        </div>
+        <div class="panel-body">
+          Check out traffic to this site, geocoded on a world map
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div>
-<!-- <div class="span5">
-  <div class="hero-unit">
-  <h2>Heading</h2>
-  <p>Tagline</p>
-  <p>
-  <a class="btn btn-primary btn-large">
-  View more
-  </a>
-  </p>
-  </div>
-</div> -->
+
+
 {% endblock %}
 

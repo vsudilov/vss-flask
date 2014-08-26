@@ -10,6 +10,14 @@
       font-weight: bold;
       color:black;
    }
+   .panel{
+      background-color: transparent;
+      box-shadow: none;
+   }
+
+   .page-header{
+      font-size: 1.5em;
+   }
 
    .collapse-text {
     width:45%;
@@ -55,7 +63,6 @@
     stroke-width: 1px;
    }
 
-
    .axis text {
     display: none;
    }
@@ -66,12 +73,15 @@
 
 </style>
 
-<div class="page-header">
-  <p style="margin-left:30%" class="muted">My research involving Magnesium -- Click each section to get more info</p>
+<div class="container">
+  <div class="page-header">
+    Find below a brief summary of doctoral research. <br>
+    Click each section to get more info.
+  </div>
 </div>
 
 <div id="accordion" class="accordion container">
-    <div class="panel col-sm-8">
+    <div class="panel col-sm-12">
      <button type="button" class="btn btn-info _1" data-toggle="collapse" data-target="#_1" data-parent="#accordion">
         <span class="number-header">1.</span> The universe is filed with gas from stars
      </button>
@@ -92,7 +102,7 @@
     </div>
 
 
-    <div class="panel col-sm-8">
+    <div class="panel col-sm-12">
      <button type="button" class="btn btn-info _2" data-toggle="collapse" data-target="#_2" data-parent="#accordion">
         <span class="number-header">2.</span> To study the distant universe, we need to be able to see this gas
      </button>
@@ -121,7 +131,7 @@
  
 
 
-    <div class="panel col-sm-8">
+    <div class="panel col-sm-12">
      <button type="button" class="btn btn-info _3" data-toggle="collapse" data-target="#_3" data-parent="#accordion">
         <span class="number-header">3.</span> The measurements (surprsingly) seem to depend on how they are taken
      </button>
@@ -149,12 +159,12 @@
 
 
 
-    <div class="panel col-sm-8">
+    <div class="panel col-sm-12">
      <button type="button" class="btn btn-info _4" data-toggle="collapse" data-target="#_4" data-parent="#accordion">
         <span class="number-header">4.</span> So, what's the answer?
      </button>
       <div id="_4" class="collapse" style="margin-top:20px;">
-        <div class="collapse-text">
+        <div class="collapse-text" style="width:95%">
           <p>
             The issue still isn't solved! 
           </p>
