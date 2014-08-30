@@ -7,8 +7,14 @@ $(document).ready(function(){
         "y":24.7,
         "r":10,
       },
-      "sourceNumber": 1,
+      "sourceNumber": 0,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 6000 K",
+          "Age: 1.2B Years",
+          "Mass: 1.2 Solar",
+        ],
       },
     },
     {
@@ -17,8 +23,14 @@ $(document).ready(function(){
         "y":74.3,
         "r":10,
       },
-      "sourceNumber": 2,
+      "sourceNumber": 1,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 4500 K",
+          "Age: 3.4B Years",
+          "Mass: 0.8 Solar",
+        ],
       },
     },
     {
@@ -27,8 +39,14 @@ $(document).ready(function(){
         "y":120,
         "r":10,
       },
-      "sourceNumber": 3,
+      "sourceNumber": 2,
       "sed": {
+        "text": [
+          "Classification: Galaxy",
+          "Temperature: n/a",
+          "Age: 6.2B Years",
+          "Mass: 2000B Solar",
+        ],
       },
     },
     {
@@ -37,8 +55,14 @@ $(document).ready(function(){
         "y":160,
         "r":10,
       },
-      "sourceNumber": 4,
+      "sourceNumber": 3,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 8000 K",
+          "Age: 800M Years",
+          "Mass: 2.2 Solar",
+        ],
       },
     },
     {
@@ -47,8 +71,14 @@ $(document).ready(function(){
         "y":175,
         "r":10,
       },
-      "sourceNumber": 5,
+      "sourceNumber": 4,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 12000 K",
+          "Age: 300M Years",
+          "Mass: 5.8 Solar",
+        ],
       },
     },
     {
@@ -57,8 +87,14 @@ $(document).ready(function(){
         "y":134.3,
         "r":7,
       },
-      "sourceNumber": 6,
+      "sourceNumber": 5,
       "sed": {
+        "text": [
+          "Classification: Quasar",
+          "Temperature: n/a",
+          "Age: 5.5B Years",
+          "Mass: n/a",
+        ],
       },
     },
     {
@@ -67,8 +103,14 @@ $(document).ready(function(){
         "y":133,
         "r":14,
       },
-      "sourceNumber": 7,
+      "sourceNumber": 6,
       "sed": {
+        "text": [
+          "Classification: Galaxy",
+          "Temperature: n/a",
+          "Age: 11.0B Years",
+          "Mass: 3200B Solar",
+        ],
       },
     },
     {
@@ -77,8 +119,14 @@ $(document).ready(function(){
         "y":32.7,
         "r":10,
       },
-      "sourceNumber": 8,
+      "sourceNumber": 7,
       "sed": {
+        "text": [
+          "Classification: Galaxy",
+          "Temperature: n/a",
+          "Age: 9.8B Years",
+          "Mass: 3100B Solar",
+        ],
       },
     },
     {
@@ -87,8 +135,14 @@ $(document).ready(function(){
         "y":30,
         "r":10,
       },
-      "sourceNumber": 9,
+      "sourceNumber": 8,
       "sed": {
+        "text": [
+          "Classification: Quasar",
+          "Temperature: n/a",
+          "Age: 10.2M Years",
+          "Mass: n/a",
+        ],
       },
     },
     {
@@ -97,8 +151,14 @@ $(document).ready(function(){
         "y":35.7,
         "r":10,
       },
-      "sourceNumber": 10,
+      "sourceNumber": 9,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 4000 K",
+          "Age: 3.5B Years",
+          "Mass: 0.6 Solar",
+        ],
       },
     },
     {
@@ -107,8 +167,14 @@ $(document).ready(function(){
         "y":122,
         "r":10,
       },
-      "sourceNumber": 11,
+      "sourceNumber": 10,
       "sed": {
+        "text": [
+          "Classification: Star",
+          "Temperature: 9200 K",
+          "Age: 1.0B Years",
+          "Mass: 3.5 Solar",
+        ],
       },
     },
   ]
@@ -126,15 +192,16 @@ $(document).ready(function(){
   $.each(sourceData, function(index,value) {
     value.sed.path = "/static/images/grond/"+value.sourceNumber+"_sed.png"
   })
-  
-  var h = 194
+
+  var h = 194 
   var w = 357
 
   var sedContainer = d3.select('.svg-container-sed')
 
   var sed = sedContainer.append("svg")
-      .attr("width",w)
-      .attr("height",h)
+    .attr("width",w)
+    .attr("height",h)
+    .style("background","white")
 
   sed.append("image")
     .attr("xlink:href",empty_sed)
@@ -145,10 +212,13 @@ $(document).ready(function(){
 
   var textContainer = d3.select('.svg-container-text')
 
-  textContainer.append("svg")
-      .attr("width",w)
-      .attr("height",h)
-  
+  var text = textContainer.append("svg")
+    .attr("width",w)
+    .attr("height",h)
+    .style("background","white")
+    .append("g")
+      .attr("transform","translate(10,40)")
+
   //Setup each image
   var imgContainers = {}
   $.each(bands,function(band,wavelength){
@@ -161,7 +231,7 @@ $(document).ready(function(){
 
     //image
     img.append("image")
-      .attr("xlink:href","/static/images/"+band+".png")
+      .attr("xlink:href","/static/images/grond/"+band+".png")
       .attr("height",h)
       .attr("width",w)
       .attr("x",0)
@@ -198,9 +268,22 @@ $(document).ready(function(){
           d3.selectAll("rect.mask")
             .transition().duration(700)
             .style("opacity",0.1)
-          sed.select('image')
-            .transition().duration(700)
+          sed.selectAll('image')
+            .style("opacity",0)
             .attr("xlink:href",sourceData[sourceNumber].sed.path)
+            .transition().duration(500)
+            .style("opacity",1)
+          text.selectAll("text")
+            .data(sourceData[sourceNumber].sed.text)
+            .enter()
+              .append("text")
+              .style("font-size","25px")
+              .attr("x","0")
+              .attr("y",function(d){return sourceData[sourceNumber].sed.text.indexOf(d)*35})
+              .text(function(d){return d})
+              .style("opacity",0)
+              .transition().duration(500)
+              .style("opacity",1)      
         })
       .on("mouseleave",function() {
           d3.selectAll('.circ-outline')
@@ -210,8 +293,11 @@ $(document).ready(function(){
             .transition().duration(700)
             .style("opacity",0.0)
           sed.select('image')
-            .transition().duration(700)
             .attr("xlink:href",empty_sed)
+          text.selectAll("text")
+            .data([])
+            .exit()
+            .remove()
         })
 
     source.append("circle")
@@ -232,15 +318,6 @@ $(document).ready(function(){
         .attr("r",  function(d) {return d.png.r})
         .attr("fill","white")
         .style("opacity",0.0)
-
-    source.append("rect")
-      .attr("class","sed")
-      .style("opacity",0.5)
-      .attr("fill","red")
-      .attr("height",10)
-      .attr("width",10)
-      .attr("x", function(d) {return d.png.x})
-      .attr("y", function(d) {return d.png.y})
 
     imgContainers[band]=thisContainer
   })
