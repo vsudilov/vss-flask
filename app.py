@@ -87,18 +87,11 @@ def grond():
 def solr_benchmarking():
   return render_template('solr_benchmarking.html')
 
-@app.route('/projects/parxiv/', methods=['get','post'])
+@app.route('/projects/parxiv')
 def parxiv():
-  if request.method=='GET':
-    with open('neo4j.cached','r') as f:
-      context = pickle.load(f)
-
-    return render_template('projects/parxiv.html',**context)
-
-  if request.method=='POST':
-    results = {"foo":"bar"}
-    return json.dumps(results)
-
+  with open('neo4j.cached','r') as f:
+    context = pickle.load(f)
+  return render_template('parxiv.html',**context)
 
 if __name__ == '__main__':
   app.debug = True

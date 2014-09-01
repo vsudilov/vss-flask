@@ -7,12 +7,10 @@ class {
       'system':         stage => first;
 #      'neo4j':          stage => main;
       'python_modules': stage => main;
-      #'ruby_modules':   stage => main;
       'bootstrap_js':    stage => main;
       'jquery':         stage => main;
       'd3js':           stage => main;
       'run_webserver':   stage => last;
-      #'sass-watch':	stage => last;
 }
 
 # Run apt-get update once on VM creation
@@ -89,7 +87,6 @@ class bootstrap_js {
   }
 }
 
-
 #jquery2.0.2
 #------------------------------
 class jquery {
@@ -100,7 +97,6 @@ class jquery {
   }
 }
 
-
 #d3.js
 #------------------------------
 class d3js {
@@ -110,22 +106,6 @@ class d3js {
       creates => "/var/www/static/js/d3.v3.min.js";
   }
 }
-
-
-#class neo4j {
-#  exec {
-#    "download_provisioner":
-#      command => "/usr/bin/wget https://raw.github.com/neo4j-contrib/neo4j-puppet/master/go -O /home/vagrant/go",
-#      creates => "/home/vagrant/go";
-#  }
-#  
-#  exec {
-#    "run_go":
-#      command => "/bin/bash /home/vagrant/go true testu testp && touch /home/vagrant/gone",
-#      creates => "/home/vagrant/gone",
-#      timeout => 0;
-#  } 
-#}
 
 class neo4j{
   exec {
@@ -145,8 +125,6 @@ class neo4j{
       timeout => 0;
   }
 }
-
-
 
 # Python modules via pip
 #------------------------------
@@ -176,19 +154,6 @@ class python_modules{
   }
 }
 
-
-
-# Ruby packages via gem
-#------------------------------
-class ruby_modules{
-  package{
-    "sass":
-      ensure => installed,
-      provider => gem;
-  }
-}
-
-
 class run_webserver {
   file {'/etc/nginx/nginx.conf':
     source => "/var/www/manifests/nginx.conf",
@@ -196,10 +161,16 @@ class run_webserver {
     group => root;
   }
 
+  file {'/etc/nginx/sites-enabled/vss_flask.nginx.conf':
+    source => "/var/www/manifests/vss_flask.nginx.conf",
+    owner => root,
+    group => root;
+  }
+
   exec { "restart_nginx":
     command => "/etc/init.d/nginx restart",
     user => root,
-    require => File['/etc/nginx/nginx.conf'];
+    require => File['/etc/nginx/nginx.conf','/etc/nginx/sites-enabled/vss_flask.nginx.conf'];
   }
   exec { "start_gunicorn":
     command => "/usr/bin/gunicorn -c /var/www/manifests/gunicorn.conf.py app:app",
@@ -208,11 +179,3 @@ class run_webserver {
     require => Exec['restart_nginx'];
   }
 }
-
-#class sass-watch{
-#  exec {
-#   "sass-watch":
-#     command => "/usr/local/bin/sass --watch /var/www/static/css/sass/style.scss:/var/www/static/css/style.css >/dev/null &",
-#     user => vagrant;
-#       }
-#}
