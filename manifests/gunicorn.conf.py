@@ -1,10 +1,8 @@
-import multiprocessing
-
 bind = "unix:/tmp/gunicorn.sock"
-workers = multiprocessing.cpu_count() * 2 + 1
-max_requests = 100
+workers = 4
+max_requests = 2000
 preload_app = True
-chdir = '/var/www/'
-daemon = True
+chdir = '/app'
+daemon = False
 debug = False
 errorlog = '/tmp/gunicorn.error.log'

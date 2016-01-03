@@ -1,0 +1,9 @@
+numpy
+flask
+flask-wtf
+flask-mail
+pygeoip
+py2neo
+
+## make_db.py
+# xlrd
