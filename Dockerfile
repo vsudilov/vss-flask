@@ -13,6 +13,9 @@ RUN wget http://d3js.org/d3.v3.min.js -O static/js/d3.v3.min.js
 RUN wget http://code.jquery.com/jquery-2.0.2.min.js -O static/js/jquery-2.0.2.min.js
 RUN wget https://github.com/twbs/bootstrap/releases/download/v3.1.1/bootstrap-3.1.1-dist.zip -O bootstrap.zip
 RUN unzip -d static/ bootstrap.zip
+RUN wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz -O /usr/share/GeoIP/GeoLiteCity.dat.gz
+RUN gzip -d /usr/share/GeoIP/GeoLiteCity.dat.gz
+
 
 RUN pip install -r requirements.txt
 
