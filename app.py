@@ -3,8 +3,6 @@ from email.mime.text import MIMEText
 from subprocess import Popen, PIPE
 import json
 import random
-from queries.neo4j import graphdb
-from queries.sql import sqldb
 import time
 import unicodedata
 from forms import ContactForm

@@ -1,21 +1,21 @@
-FROM ubuntu:precise
+FROM ubuntu:16.04
 
 RUN apt-get update
-RUN apt-get install --upgrade -y python-pip wget build-essential unzip python-dev nginx curl vim
+RUN apt-get install --upgrade -y python-pip wget build-essential unzip python-dev nginx curl
 RUN pip install -U supervisor pip gunicorn
+
+RUN wget http://d3js.org/d3.v3.min.js -O /tmp/d3.v3.min.js
+RUN wget https://code.jquery.com/jquery-3.1.1.min.js -O /tmp/jquery-3.1.1.min.js
+RUN wget https://github.com/twbs/bootstrap/releases/download/v3.3.7/bootstrap-3.3.7-dist.zip -O /tmp/bootstrap.zip
 
 COPY . /app
 WORKDIR /app
 
 RUN ln -sf /app/manifests/nginx.conf /etc/nginx/nginx.conf
 RUN ln -sf /app/manifests/vss_flask.nginx.conf /etc/nginx/sites-enabled/vss.conf
-RUN wget http://d3js.org/d3.v3.min.js -O static/js/d3.v3.min.js
-RUN wget http://code.jquery.com/jquery-2.0.2.min.js -O static/js/jquery-2.0.2.min.js
-RUN wget https://github.com/twbs/bootstrap/releases/download/v3.1.1/bootstrap-3.1.1-dist.zip -O bootstrap.zip
-RUN unzip -d static/ bootstrap.zip
-RUN wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz -O /usr/share/GeoIP/GeoLiteCity.dat.gz
-RUN gzip -d /usr/share/GeoIP/GeoLiteCity.dat.gz
-
+RUN ln -sf /tmp/d3.v3.min.js static/js/d3.v3.min.js
+RUN ln -sf /tmp/jquery-3.1.1.min.js static/js/jquery-3.1.1.min.js
+RUN unzip -o -d static/ /tmp/bootstrap.zip
 
 RUN pip install -r requirements.txt
 
