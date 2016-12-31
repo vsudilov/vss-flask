@@ -20,6 +20,11 @@ def sanitize(value): #Quick hack until the database is sanitized
     return unicodedata.normalize('NFKD',value.replace(u'\xc3\xbc','ue')).encode('ascii', 'ignore') #Manually put "ue" in u-umlaut...Need to use a better solution eventually
   return value
 
+
+@app.route('/static/<path:path>')
+def send_js(path):
+  return send_from_directory('static', path)
+
 @app.route('/visitors/')
 def visitors():
   lf = Logfile()

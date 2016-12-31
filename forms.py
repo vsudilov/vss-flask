@@ -2,7 +2,7 @@ from wtforms import (TextField, SubmitField,
                     validators, TextAreaField, 
                     IntegerField, validators, 
                     BooleanField)
-from flask.ext.wtf import Form
+from flask_wtf import Form
 
 
 class ContactForm(Form):
